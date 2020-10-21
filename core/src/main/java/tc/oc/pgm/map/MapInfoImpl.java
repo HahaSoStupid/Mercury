@@ -212,18 +212,18 @@ public class MapInfoImpl implements MapInfo {
   public Component getStyledName(MapNameStyle style) {
     TextComponent.Builder name = TextComponent.builder(getName());
 
-    if (style.isColor) name.color(TextColor.GOLD);
+    if (style.isColor) name.color(TextColor.AQUA);
     if (style.isHighlight) name.decoration(TextDecoration.UNDERLINED, true);
     if (style.showAuthors) {
       return TranslatableComponent.of(
           "misc.authorship",
-          TextColor.DARK_PURPLE,
+          TextColor.RED,
           name.build(),
           TextFormatter.list(
               getAuthors().stream()
-                  .map(c -> c.getName(NameStyle.PLAIN).color(TextColor.RED))
+                  .map(c -> c.getName(NameStyle.PLAIN).color(TextColor.GREEN))
                   .collect(Collectors.toList()),
-              TextColor.DARK_PURPLE));
+              TextColor.AQUA));
     }
 
     return name.build();

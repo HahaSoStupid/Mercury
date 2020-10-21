@@ -20,6 +20,7 @@ import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -64,17 +65,17 @@ public class ChatDispatcher implements Listener {
 
   public static final TextComponent ADMIN_CHAT_PREFIX =
       TextComponent.builder()
-          .append("[", TextColor.WHITE)
-          .append("A", TextColor.GOLD)
-          .append("] ", TextColor.WHITE)
+          .append("[", TextColor.GOLD)
+          .append("A", TextColor.RED)
+          .append("] ", TextColor.GOLD)
           .build();
 
   private static final Sound DM_SOUND = new Sound("random.orb", 1f, 1.2f);
   private static final Sound AC_SOUND = new Sound("random.orb", 1f, 0.7f);
 
   private static final String GLOBAL_SYMBOL = "!";
-  private static final String DM_SYMBOL = "@";
-  private static final String ADMIN_CHAT_SYMBOL = "$";
+  private static final String DM_SYMBOL = "$";
+  private static final String ADMIN_CHAT_SYMBOL = "@";
 
   private static final String GLOBAL_FORMAT = "<%s>: %s";
   private static final String PREFIX_FORMAT = "%s: %s";
@@ -480,19 +481,22 @@ public class ChatDispatcher implements Listener {
   }
 
   private Component getChatFormat(@Nullable Component prefix, MatchPlayer player, String message) {
-    Component msg = TextComponent.of(message != null ? message : "");
-    if (prefix == null)
-      return TextComponent.builder()
-          .append("<", TextColor.WHITE)
-          .append(names.getDecoratedNameComponent(player.getBukkit(), player.getParty()))
-          .append(">: ", TextColor.WHITE)
-          .append(msg)
-          .build();
-    return TextComponent.builder()
-        .append(prefix)
-        .append(names.getDecoratedNameComponent(player.getBukkit(), player.getParty()))
-        .append(": ", TextColor.WHITE)
-        .append(msg)
-        .build();
+    String msg = message != null ? message : "";
+    if (prefix == null) {
+      String format = PGM.get().getConfiguration().getGlobalFormat();
+      format =
+          format.replace(
+              "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
+      String newFormat = ChatColor.translateAlternateColorCodes('&', format);
+      newFormat = newFormat.replace("<message>", msg);
+      return TextComponent.builder().append(TextComponent.of(newFormat)).build();
+    }
+    String format = PGM.get().getConfiguration().getTeamFormat();
+    format =
+        format.replace(
+            "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
+    String newFormat = ChatColor.translateAlternateColorCodes('&', format);
+    newFormat = newFormat.replace("<message>", msg);
+    return TextComponent.builder().append(prefix).append(TextComponent.of(newFormat)).build();
   }
 }

@@ -59,6 +59,11 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
   }
 
   @Override
+  public String getMessageColor(Player player) {
+    return getMessageColor(player.getUniqueId());
+  }
+
+  @Override
   public Component getDecoratedNameComponent(Player player, Party party) {
     return TextComponent.builder()
         .append(getPrefixComponent(player.getUniqueId()))
@@ -75,6 +80,10 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
 
   public String getSuffix(UUID uuid) {
     return provider != null ? provider.getSuffix(uuid) : "";
+  }
+
+  public String getMessageColor(UUID uuid) {
+    return provider != null ? provider.getMessageColor(uuid) : "";
   }
 
   public Component getPrefixComponent(UUID uuid) {

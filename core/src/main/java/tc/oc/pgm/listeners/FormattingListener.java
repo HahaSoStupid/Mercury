@@ -7,6 +7,7 @@ import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,6 +16,7 @@ import tc.oc.pgm.core.CoreLeakEvent;
 import tc.oc.pgm.destroyable.Destroyable;
 import tc.oc.pgm.destroyable.DestroyableDestroyedEvent;
 import tc.oc.pgm.goals.Contribution;
+import tc.oc.pgm.util.LegacyFormatUtils;
 import tc.oc.pgm.util.named.NameStyle;
 import tc.oc.pgm.util.text.TextFormatter;
 import tc.oc.pgm.wool.PlayerWoolPlaceEvent;
@@ -23,7 +25,11 @@ public class FormattingListener implements Listener {
   @EventHandler(priority = EventPriority.MONITOR)
   public void playerWoolPlace(final PlayerWoolPlaceEvent event) {
     if (!event.getWool().isVisible()) return;
-
+    event
+        .getMatch()
+        .sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                event.getPlayer().getParty().getColor().asBungee(), 200));
     event
         .getMatch()
         .sendMessage(
@@ -32,13 +38,24 @@ public class FormattingListener implements Listener {
                 event.getPlayer().getName(NameStyle.COLOR),
                 event.getWool().getComponentName(),
                 event.getPlayer().getParty().getName()));
+    event
+        .getMatch()
+        .sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                event.getPlayer().getParty().getColor().asBungee(), 200));
   }
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void coreLeak(final CoreLeakEvent event) {
     final Core core = event.getCore();
     if (!core.isVisible()) return;
-
+    List<? extends Contribution> sort = new ArrayList<>(core.getContributions());
+    ChatColor clr = null;
+    for (Contribution entry : sort) {
+      clr = entry.getPlayerState().getParty().getColor().asBungee();
+      break;
+    }
+    event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
     event
         .getMatch()
         .sendMessage(
@@ -47,21 +64,31 @@ public class FormattingListener implements Listener {
                 formatContributions(core.getContributions(), false),
                 core.getComponentName(),
                 core.getOwner().getName()));
+    event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
   }
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void destroyableDestroyed(final DestroyableDestroyedEvent event) {
     Destroyable destroyable = event.getDestroyable();
     if (!destroyable.isVisible()) return;
+    List<? extends Contribution> sort = new ArrayList<>(destroyable.getContributions());
+    ChatColor clr = null;
 
+    for (Contribution entry : sort) {
+      clr = entry.getPlayerState().getParty().getColor().asBungee();
+      break;
+    }
+
+    event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
     event
         .getMatch()
         .sendMessage(
             TranslatableComponent.of(
                 "destroyable.complete.owned",
-                formatContributions(event.getDestroyable().getContributions(), true),
+                formatContributions(destroyable.getContributions(), true),
                 destroyable.getComponentName(),
                 destroyable.getOwner().getName()));
+    event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
   }
 
   private Component formatContributions(

@@ -1,14 +1,19 @@
 package tc.oc.pgm.tablist;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
-import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.ChatColor;
 import tc.oc.pgm.api.PGM;
+import tc.oc.pgm.api.map.MapTag;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.match.MatchScope;
 import tc.oc.pgm.api.party.Competitor;
@@ -73,8 +78,8 @@ public class MatchFooterTabEntry extends DynamicTabEntry {
     }
 
     content
-        .append(TranslatableComponent.of("match.info.time", TextColor.GRAY))
-        .append(": ", TextColor.GRAY)
+        .append(renderSidebarTitle(match.getMap().getTags(), match.getMap().getGamemode()))
+        .append(" - ", TextColor.GRAY)
         .append(
             TimeUtils.formatDuration(match.getDuration()),
             this.match.isRunning() ? TextColor.GREEN : TextColor.GOLD);
@@ -87,5 +92,44 @@ public class MatchFooterTabEntry extends DynamicTabEntry {
 
     return TextTranslations.toBaseComponentArray(
         content.colorIfAbsent(TextColor.DARK_GRAY).build(), view.getViewer());
+  }
+
+  private static String renderSidebarTitle(
+      Collection<MapTag> tags, @Nullable Component gamemodeName) {
+    final Component configTitle = PGM.get().getConfiguration().getMatchHeader();
+    if (configTitle != null) return LegacyComponentSerializer.legacy().serialize(configTitle);
+    if (gamemodeName != null) {
+      String customGamemode = LegacyComponentSerializer.legacy().serialize(gamemodeName);
+      if (!customGamemode.isEmpty()) return ChatColor.AQUA + customGamemode;
+    }
+
+    final List<String> gamemode =
+        tags.stream()
+            .filter(MapTag::isGamemode)
+            .filter(tag -> !tag.isAuxiliary())
+            .map(MapTag::getName)
+            .collect(Collectors.toList());
+    final List<String> auxiliary =
+        tags.stream()
+            .filter(MapTag::isGamemode)
+            .filter(MapTag::isAuxiliary)
+            .map(MapTag::getName)
+            .collect(Collectors.toList());
+
+    String title = "";
+
+    if (gamemode.size() == 1) {
+      title = gamemode.get(0);
+    } else if (gamemode.size() >= 2) {
+      title = "Objectives";
+    }
+
+    if (auxiliary.size() == 1) {
+      title += (title.isEmpty() ? "" : " & ") + auxiliary.get(0);
+    } else if (gamemode.isEmpty() && auxiliary.size() == 2) {
+      title = auxiliary.get(0) + " & " + auxiliary.get(1);
+    }
+
+    return ChatColor.AQUA.toString() + ChatColor.BOLD + (title.isEmpty() ? "Match" : title);
   }
 }

@@ -373,6 +373,23 @@ public final class LegacyFormatUtils {
   }
 
   /**
+   * Returns an old style horizontal divider spanning the width given
+   *
+   * @param lineColor color of the hashtags
+   * @param width width of the line in pixels
+   * @return the line as a string
+   */
+  public static String horizontalDivider(ChatColor lineColor, int width) {
+    return lineColor.toString()
+        + "#"
+        + ChatColor.GRAY.toString()
+        + Strings.repeat("-", (width + 1) / (SPACE_PIXEL_WIDTH + 1))
+        + ChatColor.RESET
+        + lineColor.toString()
+        + "#";
+  }
+
+  /**
    * Return some text centered in a horizontal line spanning the chat window
    *
    * @param text the text to center in the line (can contain formatting codes)

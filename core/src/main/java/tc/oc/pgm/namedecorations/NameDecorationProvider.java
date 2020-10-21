@@ -11,6 +11,8 @@ public interface NameDecorationProvider {
 
   String getSuffix(UUID uuid);
 
+  String getMessageColor(UUID uuid);
+
   default Component getPrefixComponent(UUID uuid) {
     return TextComponent.of(getPrefix(uuid));
   }

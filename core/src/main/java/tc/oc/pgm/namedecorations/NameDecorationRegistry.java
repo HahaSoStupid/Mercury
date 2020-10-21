@@ -18,6 +18,14 @@ public interface NameDecorationRegistry extends Listener {
   String getDecoratedName(Player player, Party party);
 
   /**
+   * Get the message color of the player
+   *
+   * @param player
+   * @return The color in string form e.g. "&c"
+   */
+  String getMessageColor(Player player);
+
+  /**
    * Get the fully decorated name as a Component
    *
    * <p>Note: Allows for prefix/suffix hover events

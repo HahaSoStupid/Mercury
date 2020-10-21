@@ -70,6 +70,11 @@
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>compile</scope> <!-- Remember to exclude in shading -->
         </dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-chat</artifactId>
+			<version>1.16-R0.2</version>
+		</dependency>
 
         <!-- Multi-protocol library for future Minecraft versions -->
         <dependency>

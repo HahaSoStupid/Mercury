@@ -3,7 +3,11 @@ package tc.oc.pgm.damage;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nullable;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
@@ -20,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.potion.PotionEffectType;
 import tc.oc.pgm.api.filter.Filter;
 import tc.oc.pgm.api.filter.query.DamageQuery;
 import tc.oc.pgm.api.filter.query.Query;
@@ -29,6 +34,8 @@ import tc.oc.pgm.api.match.MatchScope;
 import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.api.player.ParticipantState;
 import tc.oc.pgm.api.player.PlayerRelation;
+import tc.oc.pgm.api.setting.SettingKey;
+import tc.oc.pgm.api.setting.SettingValue;
 import tc.oc.pgm.api.tracker.info.DamageInfo;
 import tc.oc.pgm.api.tracker.info.FallInfo;
 import tc.oc.pgm.events.ListenerScope;
@@ -173,8 +180,11 @@ public class DamageMatchModule implements MatchModule, Listener {
   public void onDamage(EntityDamageEvent event) {
     MatchPlayer victim = getVictim(event.getEntity());
     if (victim == null) return;
-
     processDamageEvent(event, victim.getParticipantState(), tracker().resolveDamage(event));
+    if (!event.isCancelled()) {
+      if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
+          || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) renderBloodEffect(event);
+    }
   }
 
   @EventHandler(ignoreCancelled = true)
@@ -255,6 +265,39 @@ public class DamageMatchModule implements MatchModule, Listener {
                   event.getEntity());
       if (queryHostile(victimState, damageInfo).isDenied()) {
         event.setCancelled(true);
+      }
+    }
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void renderBloodEffect(final EntityDamageEvent event) {
+    if (event.getDamage() <= 0 || !(event.getEntity() instanceof Player)) {
+      return;
+    }
+
+    final Player victim = (Player) event.getEntity();
+
+    // don't render blood for invisible victims
+    if (victim.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+      return;
+    }
+
+    final Location location = victim.getLocation().clone();
+    if (location.getY() < 0) {
+      return;
+    }
+
+    for (final MatchPlayer player :
+        Objects.requireNonNull(getVictim(victim)).getMatch().getPlayers()) {
+      boolean colors =
+          player.getSettings().getValue(SettingKey.EFFECTS).equals(SettingValue.EFFECTS_ON);
+      if (colors) {
+        player
+            .getBukkit()
+            .playEffect(
+                location.add(0, (victim.getEyeHeight() / 2.0), 0),
+                Effect.STEP_SOUND,
+                Material.REDSTONE_BLOCK);
       }
     }
   }

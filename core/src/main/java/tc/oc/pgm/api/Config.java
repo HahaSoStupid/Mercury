@@ -233,6 +233,28 @@ public interface Config {
   String getMotd();
 
   /**
+   * Gets the global chat format
+   *
+   * <p>{0} = The player's name + prefix
+   *
+   * <p>{1} = The message
+   *
+   * @return
+   */
+  String getGlobalFormat();
+
+  /**
+   * Gets the tean chat format (including admin chat)
+   *
+   * <p>{0} = The player's name + prefix
+   *
+   * <p>{1} = The message
+   *
+   * @return
+   */
+  String getTeamFormat();
+
+  /**
    * Gets whether wool in capture the wool maps are auto refilled.
    *
    * @return If wool auto refill is enabled.
@@ -291,6 +313,16 @@ public interface Config {
     }
 
     /**
+     * Gets the message color of the player according to group
+     *
+     * @return The message color e.g. "&c"
+     */
+    @Nullable
+    default String getMessageColor() {
+      return getFlair().getMessageColor();
+    }
+
+    /**
      * Gets the permission node required to be included in this group.
      *
      * @return A permission node, or "op" for server operator.
@@ -323,6 +355,8 @@ public interface Config {
     String getDisplayName();
 
     String getClickLink();
+
+    String getMessageColor();
 
     Component getPrefixOverride();
 

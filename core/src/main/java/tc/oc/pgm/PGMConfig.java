@@ -95,6 +95,10 @@ public final class PGMConfig implements Config {
   private final Component rightTablistText;
   private final Component leftTablistText;
 
+  // chat.*
+  private final String globalFormat;
+  private final String teamFormat;
+
   // community.*
   private final boolean communityMode;
 
@@ -198,6 +202,12 @@ public final class PGMConfig implements Config {
         groups.add(new Group(section.getConfigurationSection(key)));
       }
     }
+
+    final String global = config.getString("chat.global");
+    this.globalFormat = global == null || global.isEmpty() ? null : parseComponentLegacy(global);
+
+    final String team = config.getString("chat.team");
+    this.teamFormat = team == null || team.isEmpty() ? null : parseComponentLegacy(team);
 
     final ConfigurationSection experiments = config.getConfigurationSection("experiments");
     this.experiments = experiments == null ? ImmutableMap.of() : experiments.getValues(false);
@@ -329,6 +339,9 @@ public final class PGMConfig implements Config {
     } else {
       config.set("motd", "");
     }
+
+    config.set("chat.global", "<player> » <message>");
+    config.set("chat.team", "<player> » <message>");
 
     // priority:id:prefix
     final List<String> groups = new ArrayList<>();
@@ -577,6 +590,16 @@ public final class PGMConfig implements Config {
   }
 
   @Override
+  public String getGlobalFormat() {
+    return globalFormat;
+  }
+
+  @Override
+  public String getTeamFormat() {
+    return teamFormat;
+  }
+
+  @Override
   public List<Group> getGroups() {
     return groups;
   }
@@ -668,6 +691,7 @@ public final class PGMConfig implements Config {
     private String displayName;
     private String description;
     private String clickLink;
+    private String messageColor;
     private Component prefixOverride;
     private Component suffixOverride;
 
@@ -686,6 +710,9 @@ public final class PGMConfig implements Config {
 
       final String link = config.getString("click-link");
       this.clickLink = link == null ? null : parseComponentLegacy(link);
+
+      final String msgColor = config.getString("message-color");
+      this.messageColor = msgColor == null ? null : parseComponentLegacy(msgColor);
 
       final String prefixComp = config.getString("prefix-component");
       this.prefixOverride =
@@ -719,6 +746,11 @@ public final class PGMConfig implements Config {
     @Override
     public String getClickLink() {
       return clickLink;
+    }
+
+    @Override
+    public String getMessageColor() {
+      return messageColor;
     }
 
     @Override

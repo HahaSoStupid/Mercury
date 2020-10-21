@@ -33,6 +33,14 @@ public class ConfigDecorationProvider implements NameDecorationProvider {
   }
 
   @Override
+  public String getMessageColor(UUID uuid) {
+    return groups(uuid)
+        .filter(g -> g.getMessageColor() != null)
+        .map(Config.Group::getMessageColor)
+        .collect(Collectors.joining());
+  }
+
+  @Override
   public Component getPrefixComponent(UUID uuid) {
     return generateFlair(groups(uuid), true);
   }

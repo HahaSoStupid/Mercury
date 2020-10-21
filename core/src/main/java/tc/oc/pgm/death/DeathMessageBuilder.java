@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
+import net.kyori.text.format.TextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import tc.oc.pgm.api.player.MatchPlayer;
@@ -87,7 +88,9 @@ public class DeathMessageBuilder {
     args[4] =
         distance == null
             ? TextComponent.empty()
-            : TranslatableComponent.of(String.valueOf(distance));
+            : TranslatableComponent.of(
+                String.valueOf(distance),
+                distance >= SNIPE_DISTANCE ? TextColor.RED : TextColor.GREEN);
     return args;
   }
 

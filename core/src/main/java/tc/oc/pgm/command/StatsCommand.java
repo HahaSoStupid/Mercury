@@ -23,7 +23,7 @@ public final class StatsCommand {
       audience.sendMessage(
           TextFormatter.horizontalLineHeading(
               sender,
-              TranslatableComponent.of("match.stats.you", TextColor.DARK_GREEN),
+              TranslatableComponent.of("match.stats.you", TextColor.YELLOW),
               TextColor.WHITE));
       audience.sendMessage(
           match.needModule(StatsMatchModule.class).getBasicStatsMessage(player.getId()));

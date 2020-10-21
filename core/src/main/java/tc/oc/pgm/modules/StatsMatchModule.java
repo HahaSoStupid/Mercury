@@ -175,7 +175,7 @@ public class StatsMatchModule implements MatchModule, Listener {
                     TextFormatter.horizontalLineHeading(
                         viewer.getBukkit(),
                         TranslatableComponent.of("match.stats.overall", TextColor.YELLOW),
-                        TextColor.WHITE));
+                        TextColor.GRAY));
                 viewer.sendMessage(killMessage);
                 viewer.sendMessage(killstreakMessage);
                 viewer.sendMessage(deathMessage);
@@ -224,6 +224,7 @@ public class StatsMatchModule implements MatchModule, Listener {
   Component getMessage(String messageKey, Map.Entry<UUID, Integer> mapEntry, TextColor color) {
     return TranslatableComponent.of(
         messageKey,
+        TextColor.GRAY,
         playerName(mapEntry.getKey()),
         TextComponent.of(Integer.toString(mapEntry.getValue()), color, TextDecoration.BOLD));
   }

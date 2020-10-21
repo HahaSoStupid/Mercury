@@ -119,7 +119,7 @@ public class MatchAnnouncer implements Listener {
     String title = ChatColor.AQUA.toString() + ChatColor.BOLD + mapInfo.getName();
     viewer.sendMessage(
         TextFormatter.horizontalLineHeading(
-            viewer.getBukkit(), TextComponent.of(title), TextColor.WHITE, 200));
+            viewer.getBukkit(), TextComponent.of(title), TextColor.GRAY, 200));
 
     String objective = " " + ChatColor.BLUE + ChatColor.ITALIC + mapInfo.getDescription();
     LegacyFormatUtils.wordWrap(objective, 200).forEach(viewer::sendMessage);
@@ -135,14 +135,14 @@ public class MatchAnnouncer implements Listener {
                       TextFormatter.nameList(authors, NameStyle.FANCY, TextColor.GRAY))));
     }
 
-    viewer.sendMessage(LegacyFormatUtils.horizontalLine(ChatColor.WHITE, 200));
+    viewer.sendMessage(LegacyFormatUtils.horizontalLine(ChatColor.GRAY, 200));
   }
 
   private void sendCurrentlyPlaying(MatchPlayer viewer) {
     viewer.sendMessage(
         TranslatableComponent.of(
             "misc.playing",
-            TextColor.DARK_PURPLE,
+            TextColor.RED,
             viewer.getMatch().getMap().getStyledName(MapNameStyle.COLOR_WITH_AUTHORS)));
   }
 }
