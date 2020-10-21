@@ -500,7 +500,7 @@ public class Destroyable extends TouchableGoal<DestroyableFactory>
 
   @Override
   public String renderSidebarStatusText(@Nullable Competitor competitor, Party viewer) {
-    if (this.getShowProgress() || viewer.isObserving()) {
+    if (this.getShowProgress()) {
       String text = this.renderCompletion();
       if (PGM.get().getConfiguration().showProximity()) {
         String precise = this.renderPreciseCompletion();

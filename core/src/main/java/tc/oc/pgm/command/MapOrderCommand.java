@@ -40,7 +40,7 @@ public final class MapOrderCommand {
         TranslatableComponent.of(
             "map.nextMap",
             TextColor.DARK_PURPLE,
-            next.getStyledName(MapNameStyle.COLOR_WITH_AUTHORS)));
+            next.getStyledNameVote(MapNameStyle.COLOR_WITH_AUTHORS)));
   }
 
   @Command(
@@ -64,7 +64,7 @@ public final class MapOrderCommand {
 
     if (reset) {
       if (mapOrder.getNextMap() != null) {
-        Component mapName = mapOrder.getNextMap().getStyledName(MapNameStyle.COLOR);
+        Component mapName = mapOrder.getNextMap().getStyledNameVote(MapNameStyle.COLOR);
         mapOrder.resetNextMap();
         ChatDispatcher.broadcastAdminChatMessage(
             TranslatableComponent.of(

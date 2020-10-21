@@ -50,7 +50,7 @@ public class VotingCommand {
             "vote.add",
             TextColor.GRAY,
             UsernameFormatUtils.formatStaffName(sender, match),
-            map.getStyledName(MapNameStyle.COLOR));
+            map.getStyledNameVote(MapNameStyle.COLOR));
 
     if (vote.getOptions().isAdded(map)) {
       viewer.sendWarning(addMessage);
@@ -83,7 +83,7 @@ public class VotingCommand {
               "vote.remove",
               TextColor.GRAY,
               UsernameFormatUtils.formatStaffName(sender, match),
-              map.getStyledName(MapNameStyle.COLOR)),
+              map.getStyledNameVote(MapNameStyle.COLOR)),
           match);
     } else {
       viewer.sendWarning(TranslatableComponent.of("map.notFound"));
@@ -120,7 +120,7 @@ public class VotingCommand {
 
     List<Component> maps =
         vote.getOptions().getCustomVoteMaps().stream()
-            .map(mi -> mi.getStyledName(MapNameStyle.COLOR))
+            .map(mi -> mi.getStyledNameVote(MapNameStyle.COLOR))
             .collect(Collectors.toList());
     Component clearedMsg =
         TranslatableComponent.of(
@@ -181,7 +181,7 @@ public class VotingCommand {
           TextComponent.builder()
               .append(Integer.toString(index), TextColor.YELLOW)
               .append(". ", TextColor.WHITE)
-              .append(mi.getStyledName(MapNameStyle.COLOR_WITH_AUTHORS))
+              .append(mi.getStyledNameVote(MapNameStyle.COLOR_WITH_AUTHORS))
               .build();
       viewer.sendMessage(indexedName);
       index++;

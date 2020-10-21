@@ -119,7 +119,7 @@ public class MapPoll {
     // Check if the winning map name's length suitable for the top title, otherwise subtitle
     boolean top = winner.getName().length() < TITLE_LENGTH_CUTOFF;
     Component mapName =
-        winner.getStyledName(MapNameStyle.COLOR).decoration(TextDecoration.BOLD, true);
+        winner.getStyledNameVote(MapNameStyle.COLOR).decoration(TextDecoration.BOLD, true);
 
     viewer.showTitle(
         top ? mapName : TextComponent.empty(), top ? TextComponent.empty() : mapName, 5, 60, 5);
@@ -136,7 +136,7 @@ public class MapPoll {
         .append("" + countVotes(votes.get(map)), TextColor.YELLOW)
         .append("] ")
         .append(
-            map.getStyledName(
+            map.getStyledNameVote(
                 winner ? MapNameStyle.HIGHLIGHT_WITH_AUTHORS : MapNameStyle.COLOR_WITH_AUTHORS))
         .build();
   }

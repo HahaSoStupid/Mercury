@@ -113,7 +113,7 @@ public final class MapPoolCommand {
           entry.append(SCORE_FORMAT.format(votes.getMapScore(map)) + " ", TextColor.YELLOW);
         if (votes != null && chance)
           entry.append(SCORE_FORMAT.format(chances.get(map)) + " ", TextColor.YELLOW);
-        entry.append(map.getStyledName(MapNameStyle.COLOR_WITH_AUTHORS));
+        entry.append(map.getStyledNameVote(MapNameStyle.COLOR_WITH_AUTHORS));
         return entry.build();
       }
     }.display(audience, maps, page);
@@ -291,7 +291,7 @@ public final class MapPoolCommand {
           TranslatableComponent.of(
               voteResult ? "vote.for" : "vote.abstain",
               voteResult ? TextColor.GREEN : TextColor.RED,
-              map.getStyledName(MapNameStyle.COLOR));
+              map.getStyledNameVote(MapNameStyle.COLOR));
       player.sendMessage(voteAction);
       poll.sendBook(player, forceOpen);
     }

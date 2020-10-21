@@ -62,7 +62,7 @@ public class FormattingListener implements Listener {
             TranslatableComponent.of(
                 "core.complete.owned",
                 formatContributions(core.getContributions(), false),
-                core.getComponentName(),
+                core.getComponentName().color(core.getOwner().getName().color()),
                 core.getOwner().getName()));
     event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
   }
@@ -85,8 +85,8 @@ public class FormattingListener implements Listener {
         .sendMessage(
             TranslatableComponent.of(
                 "destroyable.complete.owned",
-                formatContributions(destroyable.getContributions(), true),
-                destroyable.getComponentName(),
+                formatContributions(destroyable.getContributions(), false),
+                destroyable.getComponentName().color(destroyable.getOwner().getName().color()),
                 destroyable.getOwner().getName()));
     event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
   }

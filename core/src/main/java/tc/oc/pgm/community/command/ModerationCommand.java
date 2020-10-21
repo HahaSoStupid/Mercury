@@ -64,7 +64,7 @@ public class ModerationCommand implements Listener {
   private static final Sound ALT_SOUND = new Sound("mob.wither.shoot", 0.8f, 1.3f);
 
   private static final Component WARN_SYMBOL = TextComponent.of(" \u26a0 ", TextColor.YELLOW);
-  private static final Component BROADCAST_DIV = TextComponent.of(" \u00BB ", TextColor.GRAY);
+  private static final Component BROADCAST_DIV = TextComponent.of(" \u00BB ", TextColor.GOLD);
 
   private final ChatDispatcher chat;
   private final MatchManager manager;
@@ -855,7 +855,7 @@ public class ModerationCommand implements Listener {
       boolean silent,
       Duration length) {
 
-    Component prefix = type.getPunishmentPrefix();
+    Component prefix = type.getPunishmentPrefix().color(TextColor.RED);
     if (length != null && !length.isZero()) {
       String time =
           TextTranslations.translateLegacy(

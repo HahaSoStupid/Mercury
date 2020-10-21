@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 import tc.oc.pgm.api.filter.Filter;
 import tc.oc.pgm.api.filter.query.DamageQuery;
 import tc.oc.pgm.api.filter.query.Query;
@@ -276,28 +277,23 @@ public class DamageMatchModule implements MatchModule, Listener {
     }
 
     final Player victim = (Player) event.getEntity();
+    final MatchPlayer matchVictim = getVictim(victim);
 
     // don't render blood for invisible victims
     if (victim.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
       return;
     }
-
-    final Location location = victim.getLocation().clone();
+    final Location location = victim.getLocation().add(new Vector(0, victim.getEyeHeight() / 2, 0));
+    ;
     if (location.getY() < 0) {
       return;
     }
 
-    for (final MatchPlayer player :
-        Objects.requireNonNull(getVictim(victim)).getMatch().getPlayers()) {
+    for (final MatchPlayer player : Objects.requireNonNull(matchVictim).getMatch().getPlayers()) {
       boolean colors =
-          player.getSettings().getValue(SettingKey.EFFECTS).equals(SettingValue.EFFECTS_ON);
+          player.getSettings().getValue(SettingKey.BLOOD_EFFECTS).equals(SettingValue.BLOOD_ON);
       if (colors) {
-        player
-            .getBukkit()
-            .playEffect(
-                location.add(0, (victim.getEyeHeight() / 2.0), 0),
-                Effect.STEP_SOUND,
-                Material.REDSTONE_BLOCK);
+        player.getBukkit().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
       }
     }
   }

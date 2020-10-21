@@ -45,8 +45,10 @@ public enum SettingValue {
   STATS_OFF("stats", "off"), // Don't track stats
 
   EFFECTS_ON("effects", "on"), // Display special particle effects
-  EFFECTS_OFF("effects", "off"); // Don't display special particle effects
-  ;
+  EFFECTS_OFF("effects", "off"), // Don't display special particle effects
+
+  BLOOD_ON("blood", "on"), // Display blood particles
+  BLOOD_OFF("blood", "off"); // Don't display blood particles
 
   private final String key;
   private final String name;

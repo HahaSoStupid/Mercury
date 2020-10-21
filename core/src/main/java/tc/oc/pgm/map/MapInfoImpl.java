@@ -229,6 +229,53 @@ public class MapInfoImpl implements MapInfo {
     return name.build();
   }
 
+  @Override
+  public Component getStyledNameVote(MapNameStyle style) {
+    TextComponent.Builder name = TextComponent.builder(getName());
+
+    if (style.isColor) name.color(TextColor.GOLD);
+    if (style.isHighlight) name.decoration(TextDecoration.UNDERLINED, true);
+    if (style.showAuthors) {
+      return TranslatableComponent.of(
+          "misc.authorship",
+          TextColor.DARK_PURPLE,
+          name.build(),
+          TextFormatter.list(
+              getAuthors().stream()
+                  .map(c -> c.getName(NameStyle.PLAIN).color(TextColor.RED))
+                  .collect(Collectors.toList()),
+              TextColor.DARK_PURPLE));
+    }
+
+    return name.build();
+  }
+
+  @Override
+  public Component getNameWithVersion(MapNameStyle style) {
+    TextComponent.Builder name = TextComponent.builder(getName());
+    TextComponent.Builder version = TextComponent.builder(getVersion().toString());
+    if (style.isColor) {
+      name.color(TextColor.AQUA);
+      version.color(TextColor.DARK_AQUA);
+      version.decoration(TextDecoration.ITALIC, true);
+    }
+    if (style.isHighlight) name.decoration(TextDecoration.UNDERLINED, true);
+    if (style.showAuthors) {
+      return TranslatableComponent.of(
+          "misc.authorship.version",
+          TextColor.RED,
+          name.build(),
+          version.build(),
+          TextFormatter.list(
+              getAuthors().stream()
+                  .map(c -> c.getName(NameStyle.PLAIN).color(TextColor.GREEN))
+                  .collect(Collectors.toList()),
+              TextColor.AQUA));
+    }
+    TextComponent nameWithVer = TextComponent.join(name.build(), version.build());
+    return nameWithVer;
+  }
+
   private static List<String> parseRules(Element root) {
     List<String> rules = null;
     for (Element parent : root.getChildren("rules")) {

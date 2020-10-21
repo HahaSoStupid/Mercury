@@ -50,10 +50,26 @@ public interface MapInfo extends Comparable<MapInfo>, Cloneable {
    */
   Component getStyledName(MapNameStyle style);
 
+  /**
+   * Gets a styled map name for voting.
+   *
+   * @param style
+   * @return
+   */
+  Component getStyledNameVote(MapNameStyle style);
+
   @Deprecated
   default String getStyledNameLegacy(MapNameStyle style, @Nullable CommandSender sender) {
     return TextTranslations.translateLegacy(getStyledName(style), sender);
   }
+
+  /**
+   * Gets the styled map name + version.
+   *
+   * @param style A style.
+   * @return A styled map name.
+   */
+  Component getNameWithVersion(MapNameStyle style);
 
   /**
    * Get a short, human-readable description of the map's objective.

@@ -184,7 +184,7 @@ public abstract class TouchableGoal<T extends ProximityGoalDefinition> extends P
     return team != null
         && !isCompleted(team)
         && hasTouched(team)
-        && (team == viewer || showEnemyTouches() || viewer.isObserving());
+        && (team == viewer || showEnemyTouches());
   }
 
   protected void sendTouchMessage(@Nullable ParticipantState toucher, boolean includeToucher) {

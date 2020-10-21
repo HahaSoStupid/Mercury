@@ -41,7 +41,7 @@ public class MatchAnnouncer implements Listener {
     match
         .getExecutor(MatchScope.LOADED)
         .scheduleWithFixedDelay(
-            () -> match.getPlayers().forEach(this::sendCurrentlyPlaying), 0, 5, TimeUnit.MINUTES);
+            () -> match.getPlayers().forEach(this::sendCurrentlyPlaying), 0, 3, TimeUnit.MINUTES);
   }
 
   @EventHandler(priority = EventPriority.MONITOR)
@@ -93,7 +93,16 @@ public class MatchAnnouncer implements Listener {
       }
 
       viewer.showTitle(title, subtitle, 0, 40, 40);
+      try {
+        wait(3, 0);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      viewer.sendMessage(
+          LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
       viewer.sendMessage(title);
+      viewer.sendMessage(
+          LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
       if (!(viewer.getParty() instanceof Observers)) viewer.sendMessage(subtitle);
     }
   }
@@ -143,6 +152,6 @@ public class MatchAnnouncer implements Listener {
         TranslatableComponent.of(
             "misc.playing",
             TextColor.RED,
-            viewer.getMatch().getMap().getStyledName(MapNameStyle.COLOR_WITH_AUTHORS)));
+            viewer.getMatch().getMap().getNameWithVersion(MapNameStyle.COLOR_WITH_AUTHORS)));
   }
 }

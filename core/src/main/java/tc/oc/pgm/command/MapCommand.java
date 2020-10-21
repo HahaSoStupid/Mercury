@@ -97,13 +97,13 @@ public final class MapCommand {
             .append(Integer.toString(index + 1))
             .append(". ")
             .append(
-                map.getStyledName(MapNameStyle.COLOR_WITH_AUTHORS)
+                map.getStyledNameVote(MapNameStyle.COLOR_WITH_AUTHORS)
                     .hoverEvent(
                         HoverEvent.showText(
                             TranslatableComponent.of(
                                 "command.maps.hover",
                                 TextColor.GRAY,
-                                map.getStyledName(MapNameStyle.COLOR))))
+                                map.getStyledNameVote(MapNameStyle.COLOR))))
                     .clickEvent(ClickEvent.runCommand("/map " + map.getName())))
             .build();
       }
