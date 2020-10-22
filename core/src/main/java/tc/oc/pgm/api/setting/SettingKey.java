@@ -34,7 +34,7 @@ public enum SettingKey {
   VOTE("vote", VOTE_ON, VOTE_OFF), // Changes if the vote book is shown on cycle
   STATS("stats", STATS_ON, STATS_OFF), // Changes if stats are tracked
   EFFECTS("effects", EFFECTS_ON, EFFECTS_OFF), // Changes if special particle effects are shown
-  BLOOD_EFFECTS("blood", BLOOD_ON, BLOOD_OFF) // Changes if blood effects are shown
+  BLOOD("blood", BLOOD_ON, BLOOD_OFF) // Changes if blood effects are shown
 ;
 
   private final List<String> aliases;

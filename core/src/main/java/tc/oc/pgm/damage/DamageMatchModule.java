@@ -291,7 +291,7 @@ public class DamageMatchModule implements MatchModule, Listener {
 
     for (final MatchPlayer player : Objects.requireNonNull(matchVictim).getMatch().getPlayers()) {
       boolean colors =
-          player.getSettings().getValue(SettingKey.BLOOD_EFFECTS).equals(SettingValue.BLOOD_ON);
+          player.getSettings().getValue(SettingKey.BLOOD).equals(SettingValue.BLOOD_ON);
       if (colors) {
         player.getBukkit().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
       }

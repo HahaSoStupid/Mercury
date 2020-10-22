@@ -101,6 +101,9 @@ tablist:
 # To disable, set to an empty string.
 motd: "{2}» &b{1} {2}«"
 
+chat:
+  global: "<player> &8» &f<message>"
+  team: "<player> &8» &f<message>"
 # A list of player groups, defined in order of priority, with highest on top.
 #
 # Each group is assigned the permission "pgm.group.<name>".
