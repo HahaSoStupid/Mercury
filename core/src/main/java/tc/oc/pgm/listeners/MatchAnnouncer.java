@@ -93,11 +93,6 @@ public class MatchAnnouncer implements Listener {
       }
 
       viewer.showTitle(title, subtitle, 0, 40, 40);
-      try {
-        wait(3, 0);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
       viewer.sendMessage(
           LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
       viewer.sendMessage(title);

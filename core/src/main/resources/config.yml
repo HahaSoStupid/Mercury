@@ -104,12 +104,14 @@ motd: "{2}» &b{1} {2}«"
 chat:
   global: "<player> &8» &f<message>"
   team: "<player> &8» &f<message>"
+  broadcasts: "broadcasts.yml"
 # A list of player groups, defined in order of priority, with highest on top.
 #
 # Each group is assigned the permission "pgm.group.<name>".
 groups:
   # A special group for server operators.
   op:
+    message-color: "&c"
     prefix: "&6❖"
     suffix: ""
     # Display name of the group - Displayed when hovering over prefix/suffix              
