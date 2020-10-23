@@ -1,4 +1,4 @@
-name: PGM
+name: Mercury
 softdepend: [ViaVersion]
 description: ${project.parent.description}
 main: ${project.mainClass}

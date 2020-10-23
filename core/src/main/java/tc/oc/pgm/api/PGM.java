@@ -45,9 +45,9 @@ public interface PGM extends Plugin {
   static PGM set(PGM pgm) {
     try {
       get();
-      throw new IllegalArgumentException("PGM was already initialized!");
+      throw new IllegalArgumentException("Mercury was already initialized!");
     } catch (IllegalStateException e) {
-      GLOBAL.set(checkNotNull(pgm, "PGM cannot be null!"));
+      GLOBAL.set(checkNotNull(pgm, "Mercury cannot be null!"));
     }
     return get();
   }
@@ -55,7 +55,7 @@ public interface PGM extends Plugin {
   static PGM get() {
     final PGM pgm = GLOBAL.get();
     if (pgm == null) {
-      throw new IllegalStateException("PGM is not yet enabled!");
+      throw new IllegalStateException("Mercury is not yet enabled!");
     }
     return pgm;
   }

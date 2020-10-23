@@ -8,9 +8,9 @@
 
     <parent>
         <relativePath>../pom.xml</relativePath>
-        <version>0.10-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <groupId>tc.oc.pgm</groupId>
-        <artifactId>PGM</artifactId>
+        <artifactId>Mercury</artifactId>
     </parent>
 
     <name>Core</name>
@@ -26,7 +26,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>PGM-${project.version}-${git.commit.id.abbrev}</finalName>
+        <finalName>Mercury-${project.version}-${git.commit.id.abbrev}</finalName>
         <resources>
             <!-- Include the required plugin.yml and config.yml for Bukkit -->
             <resource>
@@ -103,7 +103,7 @@
                         <configuration>
                             <target>
                                 <copy file="${basedir}/target/${project.build.finalName}.jar"
-                                      tofile="../target/PGM.jar"/>
+                                      tofile="../target/Mercury.jar"/>
                             </target>
                         </configuration>
                         <goals>

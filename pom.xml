@@ -8,9 +8,9 @@
         <doclint>none</doclint>
     </properties>
 
-    <name>PGM</name>
-    <description>The original PvP Game Manager for Minecraft.</description>
-    <inceptionYear>2011</inceptionYear>
+    <name>Mercury</name>
+    <description>Custom built PvP Game Manager forked from PGMDev/PGM</description>
+    <inceptionYear>2020</inceptionYear>
 
     <url>https://pgm.dev</url>
     <issueManagement>
@@ -25,11 +25,15 @@
             <id>electroid</id>
             <name>Ashcon Partovi</name>
         </developer>
+        <developer>
+            <id>destial</id>
+            <name>Rance Andres</name>
+        </developer>
     </developers>
 
     <groupId>tc.oc.pgm</groupId>
-    <artifactId>PGM</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <artifactId>Mercury</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>

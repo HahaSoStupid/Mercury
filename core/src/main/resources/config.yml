@@ -1,6 +1,6 @@
 #
-# PGM
-# The original PvP Game Manager for Minecraft.
+# Mercury
+# The forked PvP Game Manager from PGMDev/PGM for Minecraft
 
 map:
   folders:
@@ -101,10 +101,16 @@ tablist:
 # To disable, set to an empty string.
 motd: "{2}» &b{1} {2}«"
 
+# Sets the chat format.
+#
+# <player> = Decorated player's name + prefix.
+# <message> = The message sent by the player.
+#
+# Team format also includes admin chat.
 chat:
   global: "<player> &8» &f<message>"
   team: "<player> &8» &f<message>"
-  broadcasts: "broadcasts.yml"
+
 # A list of player groups, defined in order of priority, with highest on top.
 #
 # Each group is assigned the permission "pgm.group.<name>".
