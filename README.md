@@ -1,7 +1,7 @@
 Mercury
 ======
 
-The forked PvP Game Manager plugin from [PGMDev/Dev](https://github.com/PGMDev/PGM).
+The forked PvP Game Manager plugin from [PGMDev/PGM](https://github.com/PGMDev/PGM).
 
 Overview
 --------
