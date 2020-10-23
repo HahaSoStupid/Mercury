@@ -1,5 +1,5 @@
-Mercury ![deploy](https://github.com/Electroid/PGM/workflows/deploy/badge.svg) [![Crowdin](https://badges.crowdin.net/pgm/localized.svg)](https://crowdin.com/project/pgm)
-===
+Mercury
+======
 
 The forked PvP Game Manager plugin from [PGMDev/Dev](https://github.com/PGMDev/PGM).
 
@@ -13,4 +13,27 @@ To be used along side [SportPaper 1.8](https://github.com/Electroid/SportPaper).
 Governance
 ----------
 
-The lead maintainer of this project is [Destial](https://github.com/destial), an administrator at `sgcraft.net` as well as the developer behind `abyssal.ml`.
+The lead of this project is [Destial](https://github.com/destial), an administrator at `sgcraft.net` as well as the developer behind `abyssal.ml`.
+
+Running Mercury
+=======
+
+Installation (Without Events / Tournament plugin)
+------------
+
+1. Select the folder where you want to store your server files.
+
+2. Download the latest version of [SportPaper](https://github.com/destial/Mercury/releases/download/v1.0.0/sportpaper.jar) to be able to run Mercury.
+
+3. Create a plugins folder and download the latest version of [Mercury](https://github.com/destial/Mercury/releases/download/v1.0.0/Mercury.jar).
+
+4. Run the server and enjoy playing PvP games with your friends!
+
+Installation (Events / Tournament plugin)
+------------
+
+1. Download the latest version of [Events](https://github.com/destial/Mercury/releases/download/v1.0.0/Events.jar) and install into your plugins folder.
+
+2. Run the server and follow the [instructions](https://github.com/destial/Events) to setup the teams and tournament format.
+
+3. Enjoy playing competitive matches against your friends!
