@@ -32,7 +32,7 @@
     </developers>
 
     <groupId>tc.oc.pgm</groupId>
-    <artifactId>Mercury</artifactId>
+    <artifactId>PGM</artifactId>
     <version>1.0.1</version>
     <packaging>pom</packaging>
 
@@ -55,6 +55,10 @@
         <repository>
             <id>ashcon.app</id>
             <url>https://repo.ashcon.app/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
 
@@ -79,6 +83,18 @@
 			<artifactId>bungeecord-chat</artifactId>
 			<version>1.16-R0.2</version>
 		</dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.9</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Multi-protocol library for future Minecraft versions -->
         <dependency>

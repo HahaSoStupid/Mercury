@@ -3,6 +3,7 @@ package tc.oc.pgm.namedecorations;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -26,10 +27,13 @@ public class ConfigDecorationProvider implements NameDecorationProvider {
 
   @Override
   public String getSuffix(UUID uuid) {
-    return groups(uuid)
-        .filter(g -> g.getSuffix() != null)
-        .map(Config.Group::getSuffix)
-        .collect(Collectors.joining());
+    Player player = Bukkit.getPlayer(uuid);
+    return PlaceholderAPI.setPlaceholders(
+        player.getPlayer(),
+        groups(uuid)
+            .filter(g -> g.getSuffix() != null)
+            .map(Config.Group::getSuffix)
+            .collect(Collectors.joining()));
   }
 
   @Override

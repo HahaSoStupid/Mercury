@@ -99,6 +99,10 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
       return; // Indicates the plugin failed to load, so exit early
     }
 
+    if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+      Bukkit.getPluginManager().registerEvents(this, this);
+    }
+
     Modules.registerAll();
     Permissions.registerAll();
 

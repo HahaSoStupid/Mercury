@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
         <version>1.0.1</version>
         <groupId>tc.oc.pgm</groupId>
-        <artifactId>Mercury</artifactId>
+        <artifactId>PGM</artifactId>
     </parent>
 
     <name>Core</name>
@@ -23,6 +23,12 @@
             <groupId>tc.oc.pgm</groupId>
             <artifactId>util</artifactId>
             <version>0.10-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>tc.oc.pgm</groupId>
+            <artifactId>util</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

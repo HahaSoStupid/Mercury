@@ -196,7 +196,9 @@ public interface PlayerComponent {
    */
   static TextComponent.Builder getSuffixComponent(Player player) {
     String[] parts = player.getDisplayName().split(player.getName());
-    if (parts.length != 2) return TextComponent.builder();
+    if (parts.length != 2) {
+      return TextComponent.builder();
+    }
     return stringToComponent(parts[1]);
   }
 

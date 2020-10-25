@@ -4,8 +4,6 @@ import java.util.logging.Logger;
 import net.kyori.text.Component;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,7 +21,6 @@ import tc.oc.pgm.events.ListenerScope;
 public class DeathMessageMatchModule implements MatchModule, Listener {
 
   private final Logger logger;
-  private final ConsoleCommandSender console = Bukkit.getConsoleSender();
 
   public DeathMessageMatchModule(Match match) {
     logger = match.getLogger();
