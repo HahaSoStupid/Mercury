@@ -156,6 +156,8 @@ public final class PGMConfig implements Config {
             ? null
             : new File(dataFolder, mapPoolFile).getAbsolutePath();
 
+    final String broadcastFile = config.getString("chat.broadcasts");
+
     this.startTime = parseDuration(config.getString("countdown.start", "30s"));
     this.huddleTime = parseDuration(config.getString("countdown.huddle", "0s"));
     this.cycleTime = parseDuration(config.getString("countdown.cycle", "30s"));

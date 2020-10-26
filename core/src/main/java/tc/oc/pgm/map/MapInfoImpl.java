@@ -238,13 +238,13 @@ public class MapInfoImpl implements MapInfo {
     if (style.showAuthors) {
       return TranslatableComponent.of(
           "misc.authorship",
-          TextColor.DARK_PURPLE,
+          TextColor.GRAY,
           name.build(),
           TextFormatter.list(
               getAuthors().stream()
                   .map(c -> c.getName(NameStyle.PLAIN).color(TextColor.RED))
                   .collect(Collectors.toList()),
-              TextColor.DARK_PURPLE));
+              TextColor.GRAY));
     }
 
     return name.build();

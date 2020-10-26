@@ -1,0 +1,7 @@
+enabled: true
+random: true
+interval: 20
+broadcasts:
+  - "&9&o[&3&oTip&9&o] &3&oTip message 1"
+  - "&9&o[&3&oTip&9&o] &3&oTip message 2"
+  - "&9&o[&3&oTip&9&o] &3&oTip message 3"

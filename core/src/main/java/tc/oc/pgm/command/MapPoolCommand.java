@@ -73,7 +73,7 @@ public final class MapPoolCommand {
     Component mapPoolComponent =
         TextFormatter.paginate(
             TextComponent.builder()
-                .append(TranslatableComponent.of("pool.name"))
+                .append(TranslatableComponent.of("pool.name", TextColor.AQUA))
                 .append(" (", TextColor.DARK_AQUA)
                 .append(mapPool.getName(), TextColor.AQUA)
                 .append(")", TextColor.DARK_AQUA)

@@ -8,7 +8,7 @@
 
     <parent>
         <relativePath>../pom.xml</relativePath>
-        <version>0.10-SNAPSHOT</version>
+        <version>1.0.1</version>
         <groupId>tc.oc.pgm</groupId>
         <artifactId>PGM</artifactId>
     </parent>
@@ -99,7 +99,7 @@
                         <configuration>
                             <target>
                                 <copy file="${basedir}/target/${project.build.finalName}.jar"
-                                      tofile="../target/SportPaper-with-PGM.jar"/>
+                                      tofile="../target/sportpaper.jar"/>
                             </target>
                         </configuration>
                         <goals>

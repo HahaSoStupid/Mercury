@@ -209,7 +209,12 @@ public class PGMListener implements Listener {
             PGM.get()
                 .getNameDecorationRegistry()
                 .getDecoratedNameComponent(player.getBukkit(), player.getParty());
-        Component component = TranslatableComponent.of(key, TextColor.YELLOW, name);
+        String nameStr =
+            PGM.get()
+                .getNameDecorationRegistry()
+                .getDecoratedName(player.getBukkit(), player.getParty());
+        Component component =
+            TranslatableComponent.of(key, TextColor.YELLOW, TextComponent.of(nameStr));
         viewer.sendMessage(
             staffOnly
                 ? ChatDispatcher.ADMIN_CHAT_PREFIX.append(component.color(TextColor.YELLOW))

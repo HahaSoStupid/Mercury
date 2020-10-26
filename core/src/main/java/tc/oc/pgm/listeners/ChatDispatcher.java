@@ -484,19 +484,24 @@ public class ChatDispatcher implements Listener {
     String msg = message != null ? message : "";
     if (prefix == null) {
       String format = PGM.get().getConfiguration().getGlobalFormat();
-      format =
-          format.replace(
-              "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
-      String newFormat = ChatColor.translateAlternateColorCodes('&', format);
-      newFormat = newFormat.replace("<message>", msg);
-      return TextComponent.builder().append(TextComponent.of(newFormat)).build();
+      return TextComponent.builder().append(replaceFormat(player, msg, format)).build();
     }
     String format = PGM.get().getConfiguration().getTeamFormat();
+    return TextComponent.builder()
+        .append(prefix)
+        .append(replaceFormat(player, msg, format))
+        .build();
+  }
+
+  private Component replaceFormat(MatchPlayer player, String message, String format) {
     format =
         format.replace(
             "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
     String newFormat = ChatColor.translateAlternateColorCodes('&', format);
-    newFormat = newFormat.replace("<message>", msg);
-    return TextComponent.builder().append(prefix).append(TextComponent.of(newFormat)).build();
+    String color = names.getMessageColor(player.getBukkit());
+    newFormat =
+        newFormat.replace("<message>", ((color == null || color.isEmpty() ? "" : color) + message));
+
+    return TextComponent.builder().append(TextComponent.of(newFormat)).build();
   }
 }

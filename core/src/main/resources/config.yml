@@ -1,6 +1,6 @@
 #
-# PGM
-# The original PvP Game Manager for Minecraft.
+# Mercury
+# The forked PvP Game Manager from PGMDev/PGM for Minecraft
 
 map:
   folders:
@@ -101,15 +101,12 @@ tablist:
 # To disable, set to an empty string.
 motd: "{2}» &b{1} {2}«"
 
-# Sets the chat format when messaging in global or team chats (including admin chat).
+# Sets the chat format.
 #
-# <player> = The player's display name (usually in the form of [prefix][name], or [name] if no prefix).
-# <message> = The message sent.
-# You can color code the format using the generic bukkit character '&'.
+# <player> = Decorated player's name + prefix.
+# <message> = The message sent by the player.
 #
-# Team chats always start with a [teamPrefix] (e.g. (Obs) or [A]).
-#
-# Avoid disabling this as it will send an empty message.
+# Team format also includes admin chat.
 chat:
   global: "<player> &8» &f<message>"
   team: "<player> &8» &f<message>"
@@ -120,6 +117,7 @@ chat:
 groups:
   # A special group for server operators.
   op:
+    message-color: "&c"
     prefix: "&6❖"
     suffix: ""
     # Display name of the group - Displayed when hovering over prefix/suffix              

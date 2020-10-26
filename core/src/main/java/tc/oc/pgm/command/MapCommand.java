@@ -82,7 +82,7 @@ public final class MapCommand {
 
     Component title =
         TextFormatter.paginate(
-            TranslatableComponent.of("map.title"),
+            TranslatableComponent.of("map.title", TextColor.AQUA),
             page,
             pages,
             TextColor.DARK_AQUA,
@@ -143,17 +143,18 @@ public final class MapCommand {
   public void map(Audience audience, CommandSender sender, @Text MapInfo map) {
     audience.sendMessage(
         LegacyFormatUtils.horizontalLineHeading(
-            ChatColor.DARK_AQUA
+            ChatColor.AQUA
                 + map.getName()
                 + " "
-                + ChatColor.GRAY
+                + ChatColor.DARK_AQUA
+                + ChatColor.ITALIC
                 + map.getVersion().toString(),
-            ChatColor.RED));
+            ChatColor.BLUE));
 
     audience.sendMessage(
         TextComponent.builder()
             .append(mapInfoLabel("map.info.objective"))
-            .append(map.getDescription(), TextColor.GOLD)
+            .append(map.getDescription(), TextColor.BLUE)
             .build());
 
     Collection<Contributor> authors = map.getAuthors();
@@ -188,7 +189,7 @@ public final class MapCommand {
       audience.sendMessage(
           TextComponent.builder()
               .append(mapInfoLabel("map.info.created"))
-              .append(date, TextColor.GOLD)
+              .append(date, TextColor.BLUE)
               .build());
     }
 
@@ -200,7 +201,7 @@ public final class MapCommand {
         audience.sendMessage(
             TextComponent.builder()
                 .append(++i + ") ", TextColor.WHITE)
-                .append(rule, TextColor.GOLD)
+                .append(rule, TextColor.BLUE)
                 .build());
       }
     }
@@ -215,7 +216,7 @@ public final class MapCommand {
       audience.sendMessage(
           TextComponent.builder()
               .append(mapInfoLabel("map.info.proto"))
-              .append(map.getProto().toString(), TextColor.GOLD)
+              .append(map.getProto().toString(), TextColor.BLUE)
               .build());
     }
 
@@ -233,7 +234,7 @@ public final class MapCommand {
             TextComponent.builder()
                 .append(mapInfoLabel("map.info.pools"))
                 .append(TextComponent.of(mapPools))
-                .colorIfAbsent(TextColor.GOLD)
+                .colorIfAbsent(TextColor.BLUE)
                 .decoration(TextDecoration.BOLD, false)
                 .build());
       }
@@ -262,12 +263,12 @@ public final class MapCommand {
                       TranslatableComponent.of(
                           "map.info.mapTag.hover",
                           TextColor.GRAY,
-                          TextComponent.of(mapTag, TextColor.GOLD))))
+                          TextComponent.of(mapTag, TextColor.BLUE))))
               .build();
 
       result.append(tag);
     }
-    return result.color(TextColor.GOLD).build();
+    return result.color(TextColor.BLUE).build();
   }
 
   private static Component createPlayerLimitComponent(CommandSender sender, MapInfo map) {
@@ -278,11 +279,11 @@ public final class MapCommand {
     if (maxPlayers.isEmpty()) {
       return TextComponent.empty();
     } else if (maxPlayers.size() == 1) {
-      return TextComponent.of(maxPlayers.iterator().next().toString(), TextColor.GOLD);
+      return TextComponent.of(maxPlayers.iterator().next().toString(), TextColor.BLUE);
     }
 
     int totalPlayers = maxPlayers.stream().mapToInt(i -> i).sum();
-    Component total = TextComponent.of(Integer.toString(totalPlayers), TextColor.GOLD);
+    Component total = TextComponent.of(Integer.toString(totalPlayers), TextColor.BLUE);
 
     String verboseVs = " " + TextTranslations.translate("map.info.playerLimit.vs", sender) + " ";
     Component verbose =
@@ -301,7 +302,7 @@ public final class MapCommand {
     Component componentName = contributor.getName(NameStyle.FANCY);
     if (contributor.getContribution() == null) return componentName;
     return TextComponent.builder()
-        .append(componentName)
+        .append(componentName.color(TextColor.BLUE))
         .append(" - ", TextColor.GRAY)
         .append(contributor.getContribution(), TextColor.GRAY, TextDecoration.ITALIC)
         .build();
@@ -309,8 +310,8 @@ public final class MapCommand {
 
   private Component mapInfoLabel(String key) {
     return TextComponent.builder()
-        .append(TranslatableComponent.of(key, TextColor.DARK_PURPLE, TextDecoration.BOLD))
-        .append(": ")
+        .append(TranslatableComponent.of(key, TextColor.DARK_AQUA, TextDecoration.ITALIC))
+        .append(": ", TextColor.GRAY)
         .build();
   }
 }

@@ -1,5 +1,5 @@
-name: PGM
-softdepend: [ViaVersion]
+name: Mercury
+softdepend: [ViaVersion, PlaceholderAPI]
 description: ${project.parent.description}
 main: ${project.mainClass}
 version: ${project.version} (git-${git.commit.id.abbrev})

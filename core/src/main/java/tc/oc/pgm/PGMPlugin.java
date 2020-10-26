@@ -45,17 +45,7 @@ import tc.oc.pgm.community.command.CommunityCommandGraph;
 import tc.oc.pgm.community.features.VanishManagerImpl;
 import tc.oc.pgm.db.CacheDatastore;
 import tc.oc.pgm.db.SQLDatastore;
-import tc.oc.pgm.listeners.AntiGriefListener;
-import tc.oc.pgm.listeners.BlockTransformListener;
-import tc.oc.pgm.listeners.ChatDispatcher;
-import tc.oc.pgm.listeners.FormattingListener;
-import tc.oc.pgm.listeners.GeneralizingListener;
-import tc.oc.pgm.listeners.ItemTransferListener;
-import tc.oc.pgm.listeners.MatchAnnouncer;
-import tc.oc.pgm.listeners.MotdListener;
-import tc.oc.pgm.listeners.PGMListener;
-import tc.oc.pgm.listeners.ServerPingDataListener;
-import tc.oc.pgm.listeners.WorldProblemListener;
+import tc.oc.pgm.listeners.*;
 import tc.oc.pgm.map.MapLibraryImpl;
 import tc.oc.pgm.match.MatchManagerImpl;
 import tc.oc.pgm.match.NoopVanishManager;
@@ -107,6 +97,10 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
       PGM.set(this);
     } catch (IllegalArgumentException e) {
       return; // Indicates the plugin failed to load, so exit early
+    }
+
+    if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+      Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     Modules.registerAll();

@@ -9,7 +9,7 @@ import tc.oc.pgm.api.map.MapLibrary;
 public final class AdminCommand {
 
   @Command(
-      aliases = {"pgm"},
+      aliases = {"mercuryreload"},
       desc = "Reload the config",
       perms = Permissions.RELOAD)
   public void pgm() {
