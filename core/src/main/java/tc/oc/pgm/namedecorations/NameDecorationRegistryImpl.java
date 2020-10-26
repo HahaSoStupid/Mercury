@@ -94,6 +94,10 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
     return provider != null ? provider.getSuffixComponent(uuid) : TextComponent.empty();
   }
 
+  public ChatColor getMessageChatColor(UUID uuid) {
+    return provider != null ? ChatColor.valueOf(provider.getMessageColor(uuid)) : ChatColor.RESET;
+  }
+
   @Override
   public void setProvider(@Nullable NameDecorationProvider provider) {
     this.provider = provider;

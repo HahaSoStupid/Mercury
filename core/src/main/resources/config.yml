@@ -135,6 +135,7 @@ groups:
   # customgroup:
   #   prefix: ""
   #   suffix: ""
+  #   message-color: ""
   #   display-name: ""
   #   description: ""
   #   click-link: ""

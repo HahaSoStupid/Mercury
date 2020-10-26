@@ -499,8 +499,13 @@ public class ChatDispatcher implements Listener {
             "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
     String newFormat = ChatColor.translateAlternateColorCodes('&', format);
     String color = names.getMessageColor(player.getBukkit());
+    Bukkit.getConsoleSender()
+        .sendMessage(color.isEmpty() || color == null ? "empty color" : color + "test");
     newFormat =
-        newFormat.replace("<message>", ((color == null || color.isEmpty() ? "" : color) + message));
+        newFormat.replace(
+            "<message>",
+            ((color == null || color.isEmpty() ? "" : TextColor.valueOf(color))
+                + ChatColor.stripColor(message)));
 
     return TextComponent.builder().append(TextComponent.of(newFormat)).build();
   }

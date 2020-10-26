@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
+import net.kyori.text.format.TextColor;
 import org.apache.commons.lang.math.Fraction;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -185,7 +186,7 @@ public class Team extends SimpleParty implements Competitor, Feature<TeamFactory
   public Component getChatPrefix() {
     if (chatPrefix == null) {
       this.chatPrefix =
-          TextComponent.of("(" + getShortName() + ") ", TextFormatter.convert(getColor()));
+          TextComponent.of("[TEAM] ", TextColor.GRAY);
     }
     return chatPrefix;
   }
