@@ -28,10 +28,7 @@ import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.menu.InventoryMenu;
 import tc.oc.pgm.menu.InventoryMenuItem;
-import tc.oc.pgm.observers.tools.FlySpeedTool;
-import tc.oc.pgm.observers.tools.GamemodeTool;
-import tc.oc.pgm.observers.tools.NightVisionTool;
-import tc.oc.pgm.observers.tools.VisibilityTool;
+import tc.oc.pgm.observers.tools.*;
 import tc.oc.pgm.spawns.events.ObserverKitApplyEvent;
 import tc.oc.pgm.util.text.TextTranslations;
 
@@ -160,6 +157,7 @@ public class ObserverToolsMatchModule implements MatchModule, Listener {
       this.tools.add(new NightVisionTool());
       this.tools.add(new VisibilityTool());
       this.tools.add(new GamemodeTool());
+      this.tools.add(new BloodTool());
     }
 
     @Override
@@ -174,7 +172,7 @@ public class ObserverToolsMatchModule implements MatchModule, Listener {
       items.add(null);
       for (InventoryMenuItem tool : tools) {
         items.add(tool.createItem(player));
-        if (items.size() < ROW_WIDTH - 1) {
+        if (items.size() < ROW_WIDTH-1) {
           items.add(null);
         }
       }

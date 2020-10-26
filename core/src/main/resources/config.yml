@@ -26,7 +26,7 @@ map:
     #    - "tournament"
     #
     # To enable the default maps, uncomment the repository below.
-    # - uri: "https://github.com/PGMDev/Maps"
+    # - uri: "https://github.com/destial/maps"
     #  path: "maps-default"
 
   # A path to a map pools file, or empty to disable map pools.
@@ -101,9 +101,19 @@ tablist:
 # To disable, set to an empty string.
 motd: "{2}» &b{1} {2}«"
 
+# Sets the chat format when messaging in global or team chats (including admin chat).
+#
+# <player> = The player's display name (usually in the form of [prefix][name], or [name] if no prefix).
+# <message> = The message sent.
+# You can color code the format using the generic bukkit character '&'.
+#
+# Team chats always start with a [teamPrefix] (e.g. (Obs) or [A]).
+#
+# Avoid disabling this as it will send an empty message.
 chat:
   global: "<player> &8» &f<message>"
   team: "<player> &8» &f<message>"
+
 # A list of player groups, defined in order of priority, with highest on top.
 #
 # Each group is assigned the permission "pgm.group.<name>".
