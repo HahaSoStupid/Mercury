@@ -111,6 +111,7 @@ motd: "{2}» &b{1} {2}«"
 chat:
   global: "<player> &8» &f<message>"
   team: "<player> &8» &f<message>"
+  broadcasts: "broadcasts.yml"
 
 # A list of player groups, defined in order of priority, with highest on top.
 #
