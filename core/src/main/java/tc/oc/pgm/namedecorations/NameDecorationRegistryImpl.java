@@ -59,6 +59,11 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
   }
 
   @Override
+  public String getSuffix(Player player) {
+    return getSuffix(player.getUniqueId());
+  }
+
+  @Override
   public String getMessageColor(Player player) {
     return getMessageColor(player.getUniqueId());
   }

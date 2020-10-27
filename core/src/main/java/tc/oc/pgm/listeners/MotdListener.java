@@ -44,7 +44,7 @@ public class MotdListener implements Listener {
   public void onStateChange(MatchPhaseChangeEvent event) {
     switch (event.getNewPhase()) {
       case STARTING:
-        phaseColor = ChatColor.YELLOW;
+        phaseColor = ChatColor.GOLD;
         break;
       case RUNNING:
         phaseColor = ChatColor.GREEN;

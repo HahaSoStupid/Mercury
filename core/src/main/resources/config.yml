@@ -75,6 +75,7 @@ ui:
   fireworks: true  # Spawn fireworks after objectives are completed?
   participants-see-observers: true # Can participants see observers in the tab list?
   flag-beams: false # Should everyone see floating wool flag beams?
+  touch: true # Should everyone see the touch message of the objective?
 
 # Overrides the header and footer of the side bar.
 sidebar:

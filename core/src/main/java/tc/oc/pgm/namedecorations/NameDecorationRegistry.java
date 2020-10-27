@@ -25,6 +25,8 @@ public interface NameDecorationRegistry extends Listener {
    */
   String getMessageColor(Player player);
 
+  String getSuffix(Player player);
+
   /**
    * Get the fully decorated name as a Component
    *

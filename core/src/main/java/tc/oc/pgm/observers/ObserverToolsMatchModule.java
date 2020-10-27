@@ -172,7 +172,7 @@ public class ObserverToolsMatchModule implements MatchModule, Listener {
       items.add(null);
       for (InventoryMenuItem tool : tools) {
         items.add(tool.createItem(player));
-        if (items.size() < ROW_WIDTH-1) {
+        if (items.size() < ROW_WIDTH - 1) {
           items.add(null);
         }
       }

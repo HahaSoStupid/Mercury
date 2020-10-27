@@ -56,6 +56,7 @@ public final class PGMConfig implements Config {
   // map.*
   private final List<MapSourceFactory> mapSourceFactories;
   private final String mapPoolFile;
+  private final String broadcastFile;
 
   // countdown.*
   private final Duration startTime;
@@ -81,6 +82,7 @@ public final class PGMConfig implements Config {
 
   // ui.*
   private final boolean showSideBar;
+  private final boolean showTouch;
   private final boolean showTabList;
   private final boolean showTabListPing;
   private final boolean showProximity;
@@ -157,6 +159,10 @@ public final class PGMConfig implements Config {
             : new File(dataFolder, mapPoolFile).getAbsolutePath();
 
     final String broadcastFile = config.getString("chat.broadcasts");
+    this.broadcastFile =
+        broadcastFile == null || broadcastFile.isEmpty()
+            ? null
+            : new File(dataFolder, broadcastFile).getAbsolutePath();
 
     this.startTime = parseDuration(config.getString("countdown.start", "30s"));
     this.huddleTime = parseDuration(config.getString("countdown.huddle", "0s"));
@@ -184,6 +190,7 @@ public final class PGMConfig implements Config {
         parseBoolean(config.getString("ui.participants-see-observers", "true"));
     this.showFireworks = parseBoolean(config.getString("ui.fireworks", "true"));
     this.flagBeams = parseBoolean(config.getString("ui.flag-beams", "false"));
+    this.showTouch = parseBoolean(config.getString("ui.touch", "true"));
 
     final String header = config.getString("sidebar.header");
     this.header = header == null || header.isEmpty() ? null : parseComponent(header);
@@ -467,6 +474,11 @@ public final class PGMConfig implements Config {
   }
 
   @Override
+  public String getBroadcastFile() {
+    return broadcastFile;
+  }
+
+  @Override
   public Duration getStartTime() {
     return startTime;
   }
@@ -579,6 +591,11 @@ public final class PGMConfig implements Config {
   @Override
   public boolean showFireworks() {
     return showFireworks;
+  }
+
+  @Override
+  public boolean showTouch() {
+    return showTouch;
   }
 
   @Override

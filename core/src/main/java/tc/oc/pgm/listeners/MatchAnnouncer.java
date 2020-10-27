@@ -1,16 +1,24 @@
 package tc.oc.pgm.listeners;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import tc.oc.pgm.api.Config;
+import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.map.Contributor;
 import tc.oc.pgm.api.map.MapInfo;
 import tc.oc.pgm.api.match.Match;
@@ -35,13 +43,28 @@ public class MatchAnnouncer implements Listener {
   private static final Sound SOUND_MATCH_WIN = new Sound("mob.wither.death", 1f, 1f);
   private static final Sound SOUND_MATCH_LOSE = new Sound("mob.wither.spawn", 1f, 1f);
 
+  private FileConfiguration broadcastsFile;
+  private int index = 0;
+  private int broadcastInterval;
+  private boolean broadcastEnabled;
+  private boolean broadcastRandom;
+  private List<String> broadcasts;
+
   @EventHandler(priority = EventPriority.MONITOR)
   public void onMatchLoad(final MatchLoadEvent event) {
     final Match match = event.getMatch();
+    loadBroadcastFile();
     match
         .getExecutor(MatchScope.LOADED)
         .scheduleWithFixedDelay(
-            () -> match.getPlayers().forEach(this::sendCurrentlyPlaying), 0, 3, TimeUnit.MINUTES);
+            () -> match.getPlayers().forEach(this::sendCurrentlyPlaying), 0, 1, TimeUnit.MINUTES);
+    match
+        .getExecutor(MatchScope.LOADED)
+        .scheduleWithFixedDelay(
+            () -> match.getPlayers().forEach(this::sendBroadcast),
+            0,
+            broadcastInterval,
+            TimeUnit.SECONDS);
   }
 
   @EventHandler(priority = EventPriority.MONITOR)
@@ -148,5 +171,48 @@ public class MatchAnnouncer implements Listener {
             "misc.playing",
             TextColor.RED,
             viewer.getMatch().getMap().getNameWithVersion(MapNameStyle.COLOR_WITH_AUTHORS)));
+  }
+
+  private void loadBroadcastFile() {
+    Config config = PGM.get().getConfiguration();
+    String broadcastFilePath = config.getBroadcastFile();
+    if (broadcastFilePath == null || broadcastFilePath.isEmpty()) {
+      return;
+    }
+    File broadcastFile = new File(broadcastFilePath);
+
+    if (!broadcastFile.exists()) {
+      try {
+        FileUtils.copyInputStreamToFile(PGM.get().getResource("broadcasts.yml"), broadcastFile);
+      } catch (IOException e) {
+        return;
+      }
+    }
+    this.broadcastsFile = YamlConfiguration.loadConfiguration(broadcastFile);
+    this.broadcastInterval = broadcastsFile.getInt("interval");
+    this.broadcastEnabled = broadcastsFile.getBoolean("enabled");
+    this.broadcastRandom = broadcastsFile.getBoolean("random");
+    this.broadcasts = broadcastsFile.getStringList("broadcasts");
+  }
+
+  private void sendBroadcast(MatchPlayer player) {
+    if (broadcastEnabled) {
+      if (broadcasts.size() == 0 || broadcasts.isEmpty()) {
+        return;
+      }
+      if (broadcastRandom) {
+        player.sendMessage(
+            TextComponent.of(
+                ChatColor.translateAlternateColorCodes(
+                    '&', broadcasts.get((int) Math.floor((Math.random() * broadcasts.size()))))));
+        return;
+      }
+      player.sendMessage(
+          TextComponent.of(ChatColor.translateAlternateColorCodes('&', broadcasts.get(index))));
+      index++;
+      if (index > broadcasts.size() - 1) {
+        index = 0;
+      }
+    }
   }
 }

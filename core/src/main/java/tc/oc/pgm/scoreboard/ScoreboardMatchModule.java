@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -76,7 +75,6 @@ public class ScoreboardMatchModule implements MatchModule, Listener {
 
     team.setDisplayName(TextTranslations.translateLegacy(party.getName(), null));
     team.setPrefix(party.getColor().toString());
-    team.setSuffix(ChatColor.WHITE.toString());
 
     team.setCanSeeFriendlyInvisibles(true);
     team.setAllowFriendlyFire(false);

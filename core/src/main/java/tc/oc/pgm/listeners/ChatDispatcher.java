@@ -481,7 +481,7 @@ public class ChatDispatcher implements Listener {
   }
 
   private Component getChatFormat(@Nullable Component prefix, MatchPlayer player, String message) {
-    String msg = message != null ? message : "";
+    String msg = message != null ? ChatColor.stripColor(message) : "";
     if (prefix == null) {
       String format = PGM.get().getConfiguration().getGlobalFormat();
       return TextComponent.builder().append(replaceFormat(player, msg, format)).build();
@@ -499,14 +499,12 @@ public class ChatDispatcher implements Listener {
             "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
     String newFormat = ChatColor.translateAlternateColorCodes('&', format);
     String color = names.getMessageColor(player.getBukkit());
-    Bukkit.getConsoleSender()
-        .sendMessage(color.isEmpty() || color == null ? "empty color" : color + "test");
     newFormat =
         newFormat.replace(
             "<message>",
             ((color == null || color.isEmpty() ? "" : TextColor.valueOf(color))
                 + ChatColor.stripColor(message)));
-
+    if (!message.isEmpty()) Audience.get(Bukkit.getConsoleSender()).sendMessage(newFormat);
     return TextComponent.builder().append(TextComponent.of(newFormat)).build();
   }
 }

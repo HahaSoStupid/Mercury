@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.match.MatchScope;
 import tc.oc.pgm.api.party.Competitor;
@@ -34,6 +35,7 @@ public abstract class TouchableGoal<T extends ProximityGoalDefinition> extends P
 
   public static final ChatColor COLOR_TOUCHED = ChatColor.YELLOW;
   public static final String SYMBOL_TOUCHED = "\u2733"; // ✳
+  public static final boolean SHOW_TOUCH = PGM.get().getConfiguration().showTouch();
 
   protected boolean touched;
   protected final Set<Competitor> touchingCompetitors = new HashSet<>();
@@ -177,7 +179,7 @@ public abstract class TouchableGoal<T extends ProximityGoalDefinition> extends P
   }
 
   public boolean showEnemyTouches() {
-    return false;
+    return SHOW_TOUCH;
   }
 
   public boolean shouldShowTouched(@Nullable Competitor team, Party viewer) {
@@ -194,11 +196,7 @@ public abstract class TouchableGoal<T extends ProximityGoalDefinition> extends P
     Audience.get(Bukkit.getConsoleSender()).sendMessage(message);
 
     if (!showEnemyTouches()) {
-      message =
-          TextComponent.builder()
-              .append(toucher.getParty().getChatPrefix())
-              .append(message)
-              .build();
+      message = TextComponent.builder().append(message).build();
     }
 
     for (MatchPlayer viewer : getMatch().getPlayers()) {

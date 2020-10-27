@@ -58,6 +58,14 @@ public interface Config {
   String getMapPoolFile();
 
   /**
+   * Gets a path to the "broadcasts.yml" file.
+   *
+   * @return A path to the broadcasts file, or null for no broadcasts
+   */
+  @Nullable
+  String getBroadcastFile();
+
+  /**
    * Gets a duration to wait before starting a match.
    *
    * @return A duration, if non-positive then starts immediately.
@@ -260,6 +268,13 @@ public interface Config {
    * @return If wool auto refill is enabled.
    */
   boolean shouldRefillWool();
+
+  /**
+   * Gets whether objective touch messages should be shown.
+   *
+   * @return
+   */
+  boolean showTouch();
 
   /**
    * Gets at which score players should be no longer allowed to keep playing TDM
