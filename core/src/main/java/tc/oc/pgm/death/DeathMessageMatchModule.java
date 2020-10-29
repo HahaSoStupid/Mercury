@@ -56,6 +56,5 @@ public class DeathMessageMatchModule implements MatchModule, Listener {
           break;
       }
     }
-    // console.sendMessage(message.toString());
   }
 }

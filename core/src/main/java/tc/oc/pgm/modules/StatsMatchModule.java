@@ -12,6 +12,7 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,6 +30,7 @@ import tc.oc.pgm.api.setting.SettingKey;
 import tc.oc.pgm.api.setting.SettingValue;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.tracker.info.ProjectileInfo;
+import tc.oc.pgm.util.LegacyFormatUtils;
 import tc.oc.pgm.util.named.NameStyle;
 import tc.oc.pgm.util.text.TextFormatter;
 import tc.oc.pgm.util.text.types.PlayerComponent;
@@ -180,6 +182,7 @@ public class StatsMatchModule implements MatchModule, Listener {
                 viewer.sendMessage(killstreakMessage);
                 viewer.sendMessage(deathMessage);
                 if (bestBowshot.getValue() != 0) viewer.sendMessage(bowshotMessage);
+                viewer.sendMessage(LegacyFormatUtils.horizontalLine(ChatColor.GRAY, 300));
               }
             },
             5 + 1, // NOTE: This is 1 second after the votebook appears
