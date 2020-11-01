@@ -31,6 +31,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.Permissions;
+import tc.oc.pgm.api.coins.Coins;
 import tc.oc.pgm.api.filter.query.PlayerQuery;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.match.MatchScope;
@@ -390,6 +391,11 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
   @Override
   public Settings getSettings() {
     return PGM.get().getDatastore().getSettings(id);
+  }
+
+  @Override
+  public Coins getCoins() {
+    return PGM.get().getDatastore().getCoins(id);
   }
 
   @Override

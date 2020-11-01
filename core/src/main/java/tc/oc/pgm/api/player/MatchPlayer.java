@@ -6,6 +6,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.PlayerInventory;
+import tc.oc.pgm.api.coins.Coins;
 import tc.oc.pgm.api.filter.query.PlayerQuery;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.match.Tickable;
@@ -238,6 +239,13 @@ public interface MatchPlayer extends Audience, Named, Tickable, InventoryHolder 
    * @return The cached {@link Settings}.
    */
   Settings getSettings();
+
+  /**
+   * Get the {@link Coins} of the {@link MatchPlayer}.
+   *
+   * @return The cached {@link Coins}.
+   */
+  Coins getCoins();
 
   String getPrefixedName();
 

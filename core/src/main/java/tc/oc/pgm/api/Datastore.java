@@ -1,6 +1,7 @@
 package tc.oc.pgm.api;
 
 import java.util.UUID;
+import tc.oc.pgm.api.coins.Coins;
 import tc.oc.pgm.api.map.MapActivity;
 import tc.oc.pgm.api.player.Username;
 import tc.oc.pgm.api.setting.Settings;
@@ -31,6 +32,14 @@ public interface Datastore {
    * @return A {@link MapActivity}.
    */
   MapActivity getMapActivity(String poolName);
+
+  /**
+   * Get the coins for a given player {@link UUID}.
+   *
+   * @param uuid The {@link UUID} of a player.
+   * @return A {@link Coins}.
+   */
+  Coins getCoins(UUID uuid);
 
   /** Cleans up any resources or connections. */
   void close();

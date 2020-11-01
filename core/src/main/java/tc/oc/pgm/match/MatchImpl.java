@@ -247,7 +247,11 @@ public class MatchImpl implements Match {
 
   @Override
   public void callEvent(Event event) {
-    PGM.get().getServer().getPluginManager().callEvent(event);
+    try {
+      PGM.get().getServer().getPluginManager().callEvent(event);
+    } catch (IllegalStateException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -325,7 +329,11 @@ public class MatchImpl implements Match {
     @Override
     public void execute(Listener other, Event event) throws EventException {
       if (((MatchEvent) event).getMatch() == MatchImpl.this) {
-        listener.callEvent(event);
+        try {
+          listener.callEvent(event);
+        } catch (EventException e) {
+          e.printStackTrace();
+        }
       }
     }
   }

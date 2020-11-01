@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Nullable;
 import tc.oc.pgm.api.Datastore;
+import tc.oc.pgm.api.coins.Coins;
 import tc.oc.pgm.api.map.MapActivity;
 import tc.oc.pgm.api.player.Username;
 import tc.oc.pgm.api.setting.SettingKey;
@@ -28,6 +29,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
     submitQuery(
         () ->
             "CREATE TABLE IF NOT EXISTS pools (name VARCHAR(255) PRIMARY KEY, next_map VARCHAR(255), last_active BOOLEAN)");
+    submitQuery(() -> "CREATE TABLE IF NOT EXISTS coins (id VARCHAR(36) PRIMARY KEY, amount LONG)");
   }
 
   private class SQLUsername extends UsernameImpl {
@@ -201,6 +203,86 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
   @Override
   public MapActivity getMapActivity(String name) {
     return new SQLMapActivity(name, null, false);
+  }
+
+  public class SQLCoins extends CoinsImpl {
+    SQLCoins(UUID id, long amount) {
+      super(id, amount);
+      submitQuery(new SelectQuery());
+    }
+
+    @Override
+    public void setCoins(long amount) {
+      final long oldCoins = getCoins();
+      super.setCoins(amount);
+
+      if (oldCoins == getCoins()) return;
+      submitQuery(
+          oldCoins <= 0 ? new SQLCoins.InsertQuery(amount) : new SQLCoins.UpdateQuery(amount));
+    }
+
+    private class SelectQuery implements Query {
+      @Override
+      public String getFormat() {
+        return "SELECT amount FROM coins WHERE id = ? LIMIT 1";
+      }
+
+      @Override
+      public void query(PreparedStatement statement) throws SQLException {
+        statement.setString(1, getId().toString());
+
+        try (final ResultSet result = statement.executeQuery()) {
+          if (!result.next()) return;
+
+          setCoins(result.getLong(1));
+        }
+      }
+    }
+
+    private class InsertQuery implements Query {
+
+      private InsertQuery(long coins) {
+        setCoins(coins);
+      }
+
+      @Override
+      public String getFormat() {
+        return "REPLACE INTO coins VALUES (?, ?)";
+      }
+
+      @Override
+      public void query(PreparedStatement statement) throws SQLException {
+        statement.setString(1, getId().toString());
+        statement.setLong(2, getCoins());
+
+        statement.executeUpdate();
+      }
+    }
+
+    private class UpdateQuery implements Query {
+
+      private UpdateQuery(long coins) {
+        setCoins(coins);
+      }
+
+      @Override
+      public String getFormat() {
+        return "REPLACE INTO coins VALUES (?, ?)";
+      }
+
+      @Override
+      public void query(PreparedStatement statement) throws SQLException {
+        statement.setString(1, getId().toString());
+        statement.setLong(2, getCoins());
+
+        statement.executeUpdate();
+      }
+    }
+  }
+
+  @Override
+  public Coins getCoins(UUID uuid) {
+    return new SQLCoins(uuid, 0);
   }
 
   private class SQLMapActivity extends MapActivityImpl {

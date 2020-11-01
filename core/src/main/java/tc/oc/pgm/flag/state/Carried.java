@@ -39,6 +39,7 @@ import tc.oc.pgm.scoreboard.SidebarMatchModule;
 import tc.oc.pgm.spawns.events.ParticipantDespawnEvent;
 import tc.oc.pgm.teams.TeamFactory;
 import tc.oc.pgm.teams.TeamMatchModule;
+import tc.oc.pgm.util.LegacyFormatUtils;
 import tc.oc.pgm.util.named.NameStyle;
 
 /** State of a flag when a player has picked it up and is wearing the banner on their head. */
@@ -237,10 +238,20 @@ public class Carried extends Spawned implements Missing {
     this.flag
         .getMatch()
         .sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                this.carrier.getParty().getColor().asBungee(), 200));
+    this.flag
+        .getMatch()
+        .sendMessage(
             TranslatableComponent.of(
                 "flag.capture.player",
                 this.flag.getComponentName(),
                 this.carrier.getName(NameStyle.COLOR)));
+    this.flag
+        .getMatch()
+        .sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                this.carrier.getParty().getColor().asBungee(), 200));
 
     this.flag.resetTouches(this.carrier.getCompetitor());
     this.flag.resetProximity(this.carrier.getCompetitor());

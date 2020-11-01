@@ -62,7 +62,7 @@ public class MatchAnnouncer implements Listener {
         .getExecutor(MatchScope.LOADED)
         .scheduleWithFixedDelay(
             () -> match.getPlayers().forEach(this::sendBroadcast),
-            0,
+            broadcastInterval,
             broadcastInterval,
             TimeUnit.SECONDS);
   }
@@ -115,13 +115,18 @@ public class MatchAnnouncer implements Listener {
         }
       }
 
-      viewer.showTitle(title, subtitle, 0, 40, 40);
-      viewer.sendMessage(
-          LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
-      viewer.sendMessage(title);
-      viewer.sendMessage(
-          LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
-      if (!(viewer.getParty() instanceof Observers)) viewer.sendMessage(subtitle);
+      if (event.getWinner() == null || event.getWinners() == null || event.getWinners().isEmpty()) {
+        viewer.showTitle(title, subtitle, 0, 40, 40);
+        viewer.sendMessage(title);
+      } else {
+        viewer.showTitle(title, subtitle, 0, 40, 40);
+        viewer.sendMessage(
+            LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
+        viewer.sendMessage(title);
+        viewer.sendMessage(
+            LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
+        if (!(viewer.getParty() instanceof Observers)) viewer.sendMessage(subtitle);
+      }
     }
   }
 

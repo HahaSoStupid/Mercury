@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.controlpoint.events.ControllerChangeEvent;
+import tc.oc.pgm.util.LegacyFormatUtils;
 import tc.oc.pgm.util.text.TextFormatter;
 
 public class ControlPointAnnouncer implements Listener {
@@ -22,13 +23,21 @@ public class ControlPointAnnouncer implements Listener {
 
       if (event.getOldController() != null && event.getNewController() == null) {
         this.match.sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                event.getNewController().getColor().asBungee(), 200));
+        this.match.sendMessage(
             TextComponent.builder()
                 .append(event.getOldController().getName())
                 .append(" lost ", TextColor.GRAY)
                 .append(event.getControlPoint().getName(), TextColor.WHITE)
                 .build());
-
+        this.match.sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                event.getNewController().getColor().asBungee(), 200));
       } else if (event.getNewController() != null) {
+        this.match.sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                event.getNewController().getColor().asBungee(), 200));
         this.match.sendMessage(
             TextComponent.builder()
                 .append(event.getNewController().getName())
@@ -37,6 +46,9 @@ public class ControlPointAnnouncer implements Listener {
                     event.getControlPoint().getName(),
                     TextFormatter.convert(event.getNewController().getColor()))
                 .build());
+        this.match.sendMessage(
+            LegacyFormatUtils.horizontalDivider(
+                event.getNewController().getColor().asBungee(), 200));
       }
     }
   }
