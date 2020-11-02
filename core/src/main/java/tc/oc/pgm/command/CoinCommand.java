@@ -8,6 +8,8 @@ import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import tc.oc.pgm.api.Permissions;
+import tc.oc.pgm.api.coins.Coins;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.player.MatchPlayer;
 
@@ -28,14 +30,17 @@ public final class CoinCommand {
     } else {
       player.sendMessage(
           TranslatableComponent.of(
-              "coins.get", TextColor.YELLOW, TextComponent.of(player.getCoins().getCoins())));
+              "coins.get",
+              TextColor.YELLOW,
+              TextComponent.of(player.getCoins().getCoins(), TextColor.GOLD)));
     }
   }
 
   @Command(
       aliases = {"setcoins"},
       desc = "Sets the amount of coins",
-      usage = "[player] [amount]")
+      usage = "[player] [amount]",
+      perms = Permissions.STAFF)
   public void setcoins(
       MatchPlayer player, CommandSender sender, Player affected, @Default("1") int amount) {
     MatchPlayer a;
@@ -49,21 +54,23 @@ public final class CoinCommand {
         return;
       }
     }
-    a.getCoins().setCoins(amount);
+    Coins coins = a.getCoins();
+    coins.setCoins(amount);
     player.sendMessage(
         TranslatableComponent.of(
-            "coins.set", TextColor.YELLOW, a.getName(), TextComponent.of(a.getCoins().getCoins())));
+            "coins.set", TextColor.YELLOW, a.getName(), TextComponent.of(coins.getCoins())));
     a.sendMessage(
         TranslatableComponent.of(
             "death.getcoins",
             TextColor.YELLOW,
-            TextComponent.of(a.getCoins().getCoins(), TextColor.GOLD)));
+            TextComponent.of(coins.getCoins(), TextColor.GOLD)));
   }
 
   @Command(
       aliases = {"givecoins"},
       desc = "Gives coins to player",
-      usage = "[player] [amount]")
+      usage = "[player] [amount]",
+      perms = Permissions.STAFF)
   public void givecoins(
       MatchPlayer player,
       CommandSender sender,
@@ -77,13 +84,11 @@ public final class CoinCommand {
       a = match.getPlayer(affected);
     }
     if (a != null) {
-      a.getCoins().addCoins(amount);
+      Coins coins = a.getCoins();
+      coins.addCoins(amount);
       player.sendMessage(
           TranslatableComponent.of(
-              "coins.set",
-              TextColor.YELLOW,
-              a.getName(),
-              TextComponent.of(a.getCoins().getCoins())));
+              "coins.set", TextColor.YELLOW, a.getName(), TextComponent.of(coins.getCoins())));
       a.sendMessage(
           TranslatableComponent.of(
               "death.getcoins", TextColor.YELLOW, TextComponent.of(amount, TextColor.GOLD)));

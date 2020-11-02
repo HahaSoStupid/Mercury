@@ -208,11 +208,11 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
     @Override
     public void setCoins(long amount) {
-      final long oldCoins = getCoins();
+      final long oldCoins = super.getCoins();
       super.setCoins(amount);
 
       if (oldCoins != super.getCoins()) {
-        submitQuery(getCoins() <= 0 ? new InsertQuery() : new UpdateQuery(getCoins()));
+        submitQuery(getCoins() <= 0 ? new InsertQuery(amount) : new UpdateQuery(amount));
       }
     }
 
@@ -236,17 +236,21 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
     private class InsertQuery implements Query {
 
-      private InsertQuery() {}
+      private final long amount;
+
+      private InsertQuery(long amount) {
+        this.amount = amount;
+      }
 
       @Override
       public String getFormat() {
-        return "INSERT INTO coins VALUES (?, ?)";
+        return "REPLACE INTO coins VALUES (?, ?)";
       }
 
       @Override
       public void query(PreparedStatement statement) throws SQLException {
         statement.setString(1, getId().toString());
-        statement.setLong(2, getCoins());
+        statement.setLong(2, amount);
 
         statement.executeUpdate();
       }
@@ -254,8 +258,10 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
     private class UpdateQuery implements Query {
 
-      private UpdateQuery(long coins) {
-        setCoins(coins);
+      private final long amount;
+
+      private UpdateQuery(long amount) {
+        this.amount = amount;
       }
 
       @Override
@@ -265,8 +271,8 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
       @Override
       public void query(PreparedStatement statement) throws SQLException {
-        statement.setString(3, getId().toString());
-        statement.setLong(2, getCoins());
+        statement.setLong(1, amount);
+        statement.setString(2, getId().toString());
 
         statement.executeUpdate();
       }

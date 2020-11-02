@@ -10,7 +10,7 @@ public class CoinsImpl implements Coins {
 
   CoinsImpl(UUID id, long amount) {
     this.id = id;
-    setCoins(amount);
+    this.coins = amount;
   }
 
   @Override
@@ -23,19 +23,19 @@ public class CoinsImpl implements Coins {
     return coins;
   }
 
-  @Override
+  // @Override
   public void setCoins(long amount) {
     this.coins = amount;
   }
 
   @Override
   public void addCoins(long amount) {
-    setCoins(getCoins() + amount);
+    setCoins(this.coins + amount);
   }
 
   @Override
   public void removeCoins(long amount) {
-    setCoins(getCoins() - amount);
+    setCoins(this.coins - amount);
   }
 
   @Override
