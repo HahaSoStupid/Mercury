@@ -412,6 +412,7 @@ public class ChatDispatcher implements Listener {
                     .map(Audience::get)
                     .forEach(player -> player.sendMessage(componentMsg));
               });
+      Audience.get(Bukkit.getConsoleSender()).sendMessage(componentMsg);
       return;
     }
     match.getPlayers().stream()
@@ -504,7 +505,6 @@ public class ChatDispatcher implements Listener {
             "<message>",
             ((color == null || color.isEmpty() ? "" : TextColor.valueOf(color))
                 + ChatColor.stripColor(message)));
-    if (!message.isEmpty()) Audience.get(Bukkit.getConsoleSender()).sendMessage(newFormat);
     return TextComponent.builder().append(TextComponent.of(newFormat)).build();
   }
 }

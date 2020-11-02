@@ -25,7 +25,7 @@ import tc.oc.pgm.util.xml.XMLUtils;
 public class ControlPointModule implements MapModule<ControlPointMatchModule> {
 
   private static final Collection<MapTag> TAGS =
-      ImmutableList.of(MapTag.create("controlpoint", "Control the Point", true, false));
+      ImmutableList.of(MapTag.create("controlpoint", "Points", true, false));
   private final List<ControlPointDefinition> definitions;
 
   public ControlPointModule(List<ControlPointDefinition> definitions) {

@@ -36,8 +36,7 @@ public class FormattingListener implements Listener {
             TranslatableComponent.of(
                 "wool.complete.owned",
                 event.getPlayer().getName(NameStyle.COLOR),
-                event.getWool().getComponentName(),
-                event.getPlayer().getParty().getName()));
+                event.getWool().getComponentName()));
     event
         .getMatch()
         .sendMessage(

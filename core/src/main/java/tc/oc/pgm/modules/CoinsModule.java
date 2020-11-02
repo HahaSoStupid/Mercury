@@ -36,7 +36,7 @@ public class CoinsModule implements MatchModule, Listener {
     this.match = match;
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onPlayerDeath(MatchPlayerDeathEvent event) {
     if (event.getMatch() != match) {
       return;
@@ -49,11 +49,14 @@ public class CoinsModule implements MatchModule, Listener {
       return;
     }
     MatchPlayer killer = player.get();
+    if (killer == event.getVictim()) {
+      return;
+    }
     int random = (int) Math.floor(Math.random() * 10);
     addCoins(killer, random);
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onDestroy(DestroyableDestroyedEvent event) {
     if (event.getMatch() != match) {
       return;
@@ -71,7 +74,7 @@ public class CoinsModule implements MatchModule, Listener {
     }
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onPlace(PlayerWoolPlaceEvent event) {
     if (event.getMatch() != match) {
       return;
@@ -85,7 +88,7 @@ public class CoinsModule implements MatchModule, Listener {
     addCoins(placer, random);
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onLeak(CoreLeakEvent event) {
     if (event.getMatch() != match) {
       return;
@@ -103,7 +106,7 @@ public class CoinsModule implements MatchModule, Listener {
     }
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onCapturePoint(ControllerChangeEvent event) {
     if (event.getMatch() != match) {
       return;
@@ -122,7 +125,7 @@ public class CoinsModule implements MatchModule, Listener {
     }
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onFlagCapture(FlagCaptureEvent event) {
     if (event.getMatch() != match) {
       return;
@@ -135,31 +138,20 @@ public class CoinsModule implements MatchModule, Listener {
     addCoins(capturer, random);
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onWin(MatchFinishEvent event) {
     if (event.getMatch() != match) {
       return;
     }
     Collection<Competitor> winners = event.getWinners();
-    Collection<Competitor> competitors = event.getMatch().getCompetitors();
     for (Competitor winner : winners) {
-      for (Competitor all : competitors) {
-        Collection<MatchPlayer> winnerPlayers = winner.getPlayers();
-        Collection<MatchPlayer> allPlayers = all.getPlayers();
-        for (MatchPlayer winnerPlayer : winnerPlayers) {
-          for (MatchPlayer player : allPlayers) {
-            if (winnerPlayer == null) {
-              continue;
-            }
-            if (winnerPlayer == player) {
-              int random = (int) Math.floor(Math.random() * 10) + 30;
-              addCoins(winnerPlayer, random);
-              continue;
-            }
-            int random = (int) Math.floor(Math.random() * 10);
-            addCoins(player, random);
-          }
+      Collection<MatchPlayer> winnerPlayers = winner.getPlayers();
+      for (MatchPlayer winnerPlayer : winnerPlayers) {
+        if (winnerPlayer == null) {
+          continue;
         }
+        int random = (int) Math.floor(Math.random() * 10) + 20;
+        addCoins(winnerPlayer, random);
       }
     }
   }

@@ -10,14 +10,17 @@ import javax.annotation.Nullable;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.match.MatchModule;
 import tc.oc.pgm.countdowns.CountdownContext;
+import tc.oc.pgm.util.LegacyFormatUtils;
 import tc.oc.pgm.util.chat.Sound;
 
-public class ObjectiveModesMatchModule implements MatchModule {
+public class ObjectiveModesMatchModule implements MatchModule, Listener {
 
   private static final Sound SOUND = new Sound("mob.zombie.remedy", 0.15f, 1.2f);
 
@@ -100,7 +103,13 @@ public class ObjectiveModesMatchModule implements MatchModule {
             .append(event.getName(), TextColor.DARK_RED)
             .append(" < < < <", TextColor.DARK_AQUA)
             .build();
+    event
+        .getMatch()
+        .sendMessage(TextComponent.of(LegacyFormatUtils.horizontalLine(ChatColor.WHITE, 200)));
     event.getMatch().sendMessage(broadcast);
+    event
+        .getMatch()
+        .sendMessage(TextComponent.of(LegacyFormatUtils.horizontalLine(ChatColor.WHITE, 200)));
     event.getMatch().playSound(SOUND);
   }
 }

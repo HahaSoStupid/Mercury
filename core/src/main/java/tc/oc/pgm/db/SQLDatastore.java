@@ -31,7 +31,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
             "CREATE TABLE IF NOT EXISTS pools (name VARCHAR(255) PRIMARY KEY, next_map VARCHAR(255), last_active BOOLEAN)");
     submitQuery(() -> "CREATE TABLE IF NOT EXISTS coins (id VARCHAR(36) PRIMARY KEY, amount LONG)");
   }
-
+  // -------------------------------------------------------------------------
   private class SQLUsername extends UsernameImpl {
 
     private volatile boolean queried;
@@ -109,7 +109,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
   public Username getUsername(UUID id) {
     return new SQLUsername(id, null);
   }
-
+  // -------------------------------------------------------------------------
   private class SQLSettings extends SettingsImpl {
 
     SQLSettings(UUID id, long bit) {
@@ -199,12 +199,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
   public Settings getSettings(UUID id) {
     return new SQLSettings(id, 0);
   }
-
-  @Override
-  public MapActivity getMapActivity(String name) {
-    return new SQLMapActivity(name, null, false);
-  }
-
+  // -------------------------------------------------------------------------
   public class SQLCoins extends CoinsImpl {
     SQLCoins(UUID id, long amount) {
       super(id, amount);
@@ -216,9 +211,9 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
       final long oldCoins = getCoins();
       super.setCoins(amount);
 
-      if (oldCoins == getCoins()) return;
-      submitQuery(
-          oldCoins <= 0 ? new SQLCoins.InsertQuery(amount) : new SQLCoins.UpdateQuery(amount));
+      if (oldCoins != super.getCoins()) {
+        submitQuery(getCoins() <= 0 ? new InsertQuery() : new UpdateQuery(getCoins()));
+      }
     }
 
     private class SelectQuery implements Query {
@@ -241,13 +236,11 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
     private class InsertQuery implements Query {
 
-      private InsertQuery(long coins) {
-        setCoins(coins);
-      }
+      private InsertQuery() {}
 
       @Override
       public String getFormat() {
-        return "REPLACE INTO coins VALUES (?, ?)";
+        return "INSERT INTO coins VALUES (?, ?)";
       }
 
       @Override
@@ -267,12 +260,12 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
       @Override
       public String getFormat() {
-        return "REPLACE INTO coins VALUES (?, ?)";
+        return "UPDATE coins SET amount = ? WHERE id = ?";
       }
 
       @Override
       public void query(PreparedStatement statement) throws SQLException {
-        statement.setString(1, getId().toString());
+        statement.setString(3, getId().toString());
         statement.setLong(2, getCoins());
 
         statement.executeUpdate();
@@ -284,7 +277,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
   public Coins getCoins(UUID uuid) {
     return new SQLCoins(uuid, 0);
   }
-
+  // -------------------------------------------------------------------------
   private class SQLMapActivity extends MapActivityImpl {
 
     SQLMapActivity(String poolName, @Nullable String mapName, boolean active) {
@@ -340,4 +333,10 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
       }
     }
   }
+
+  @Override
+  public MapActivity getMapActivity(String name) {
+    return new SQLMapActivity(name, null, false);
+  }
+  // -------------------------------------------------------------------------
 }

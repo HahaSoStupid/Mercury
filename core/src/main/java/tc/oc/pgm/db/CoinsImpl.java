@@ -30,12 +30,12 @@ public class CoinsImpl implements Coins {
 
   @Override
   public void addCoins(long amount) {
-    this.coins += amount;
+    setCoins(getCoins() + amount);
   }
 
   @Override
   public void removeCoins(long amount) {
-    this.coins -= amount;
+    setCoins(getCoins() - amount);
   }
 
   @Override
