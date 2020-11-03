@@ -35,9 +35,13 @@ public interface VirtualAudience extends Audience {
 
   @Override
   default void sendWarning(Component message) {
+    TextComponent warning = TextComponent.of(" \u26a0 ", TextColor.YELLOW);
     sendMessage(
-        TextComponent.of(" \u26a0 ", TextColor.YELLOW)
-            .append(message.colorIfAbsent(TextColor.RED)));
+        TextComponent.builder()
+            .append(warning)
+            .append(message.colorIfAbsent(TextColor.RED))
+            .append(warning)
+            .build());
     playSound(new Sound("note.bass", 1f, 0.75f));
   }
 

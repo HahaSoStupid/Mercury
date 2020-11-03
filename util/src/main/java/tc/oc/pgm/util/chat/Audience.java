@@ -65,7 +65,8 @@ public interface Audience {
 
   @Deprecated
   default void sendWarning(String message, boolean audible) {
-    sendMessage(ChatColor.YELLOW + " \u26a0 " + ChatColor.RED + message);
+    sendMessage(
+        ChatColor.YELLOW + " \u26a0 " + ChatColor.RED + message + ChatColor.YELLOW + " \u26a0 ");
   }
 
   @Deprecated
