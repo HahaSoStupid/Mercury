@@ -13,7 +13,7 @@ To be used along side [SportPaper 1.8](https://github.com/Electroid/SportPaper).
 Governance
 ----------
 
-The lead of this project is [Destial](https://github.com/destial), an administrator at `sgcraft.net` as well as the developer behind `abyssal.ml`.
+The lead of this project is [Destial](https://github.com/destial), an administrator at `sgcraft.net`.
 
 Running Mercury
 =======
