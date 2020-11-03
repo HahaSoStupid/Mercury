@@ -232,8 +232,8 @@ public class Carried extends Spawned implements Missing {
   }
 
   protected void captureFlag(Net net) {
-    this.carrier.sendMessage(
-        TranslatableComponent.of("flag.capture.you", this.flag.getComponentName()));
+    // this.carrier.sendMessage(TranslatableComponent.of("flag.capture.you",
+    // this.flag.getComponentName()));
 
     this.flag
         .getMatch()
@@ -243,10 +243,14 @@ public class Carried extends Spawned implements Missing {
     this.flag
         .getMatch()
         .sendMessage(
-            TranslatableComponent.of(
-                "flag.capture.player",
-                this.flag.getComponentName(),
-                this.carrier.getName(NameStyle.COLOR)));
+            TextComponent.builder()
+                .append("   ")
+                .append(
+                    TranslatableComponent.of(
+                        "flag.capture.player",
+                        this.flag.getComponentName(),
+                        this.carrier.getName(NameStyle.COLOR)))
+                .build());
     this.flag
         .getMatch()
         .sendMessage(

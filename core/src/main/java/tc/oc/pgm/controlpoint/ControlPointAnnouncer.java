@@ -27,6 +27,7 @@ public class ControlPointAnnouncer implements Listener {
                 event.getNewController().getColor().asBungee(), 200));
         this.match.sendMessage(
             TextComponent.builder()
+                .append("   ")
                 .append(event.getOldController().getName())
                 .append(" lost ", TextColor.GRAY)
                 .append(event.getControlPoint().getName(), TextColor.WHITE)
@@ -40,6 +41,7 @@ public class ControlPointAnnouncer implements Listener {
                 event.getNewController().getColor().asBungee(), 200));
         this.match.sendMessage(
             TextComponent.builder()
+                .append("   ")
                 .append(event.getNewController().getName())
                 .append(" captured ", TextColor.GRAY)
                 .append(

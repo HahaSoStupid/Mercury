@@ -33,10 +33,14 @@ public class FormattingListener implements Listener {
     event
         .getMatch()
         .sendMessage(
-            TranslatableComponent.of(
-                "wool.complete.owned",
-                event.getPlayer().getName(NameStyle.COLOR),
-                event.getWool().getComponentName()));
+            TextComponent.builder()
+                .append("   ")
+                .append(
+                    TranslatableComponent.of(
+                        "wool.complete.owned",
+                        event.getPlayer().getName(NameStyle.COLOR),
+                        event.getWool().getComponentName()))
+                .build());
     event
         .getMatch()
         .sendMessage(
@@ -49,7 +53,7 @@ public class FormattingListener implements Listener {
     final Core core = event.getCore();
     if (!core.isVisible()) return;
     List<? extends Contribution> sort = new ArrayList<>(core.getContributions());
-    ChatColor clr = null;
+    ChatColor clr = ChatColor.GRAY;
     for (Contribution entry : sort) {
       clr = entry.getPlayerState().getParty().getColor().asBungee();
       break;
@@ -58,11 +62,15 @@ public class FormattingListener implements Listener {
     event
         .getMatch()
         .sendMessage(
-            TranslatableComponent.of(
-                "core.complete.owned",
-                formatContributions(core.getContributions(), false),
-                core.getComponentName().color(core.getOwner().getName().color()),
-                core.getOwner().getName()));
+            TextComponent.builder()
+                .append("   ")
+                .append(
+                    TranslatableComponent.of(
+                        "core.complete.owned",
+                        formatContributions(core.getContributions(), false),
+                        core.getComponentName().color(core.getOwner().getName().color()),
+                        core.getOwner().getName()))
+                .build());
     event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
   }
 
@@ -71,7 +79,7 @@ public class FormattingListener implements Listener {
     Destroyable destroyable = event.getDestroyable();
     if (!destroyable.isVisible()) return;
     List<? extends Contribution> sort = new ArrayList<>(destroyable.getContributions());
-    ChatColor clr = null;
+    ChatColor clr = ChatColor.GRAY;
 
     for (Contribution entry : sort) {
       clr = entry.getPlayerState().getParty().getColor().asBungee();
@@ -82,11 +90,17 @@ public class FormattingListener implements Listener {
     event
         .getMatch()
         .sendMessage(
-            TranslatableComponent.of(
-                "destroyable.complete.owned",
-                formatContributions(destroyable.getContributions(), false),
-                destroyable.getComponentName().color(destroyable.getOwner().getName().color()),
-                destroyable.getOwner().getName()));
+            TextComponent.builder()
+                .append("   ")
+                .append(
+                    TranslatableComponent.of(
+                        "destroyable.complete.owned",
+                        formatContributions(destroyable.getContributions(), false),
+                        destroyable
+                            .getComponentName()
+                            .color(destroyable.getOwner().getName().color()),
+                        destroyable.getOwner().getName()))
+                .build());
     event.getMatch().sendMessage(LegacyFormatUtils.horizontalDivider(clr, 200));
   }
 
@@ -129,6 +143,6 @@ public class FormattingListener implements Listener {
       credit = TextFormatter.list(contributors, TextColor.WHITE);
     }
 
-    return credit;
+    return TextComponent.builder().append(credit).build();
   }
 }

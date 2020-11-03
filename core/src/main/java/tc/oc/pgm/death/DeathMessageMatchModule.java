@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import net.kyori.text.Component;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,6 +17,7 @@ import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.api.player.event.MatchPlayerDeathEvent;
 import tc.oc.pgm.api.setting.SettingKey;
 import tc.oc.pgm.events.ListenerScope;
+import tc.oc.pgm.util.chat.Audience;
 
 @ListenerScope(MatchScope.RUNNING)
 public class DeathMessageMatchModule implements MatchModule, Listener {
@@ -56,5 +58,6 @@ public class DeathMessageMatchModule implements MatchModule, Listener {
           break;
       }
     }
+    Audience.get(Bukkit.getConsoleSender()).sendMessage(message);
   }
 }

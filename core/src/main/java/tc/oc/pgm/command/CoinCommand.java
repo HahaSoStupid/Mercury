@@ -63,7 +63,8 @@ public final class CoinCommand {
         TranslatableComponent.of(
             "death.getcoins",
             TextColor.YELLOW,
-            TextComponent.of(coins.getCoins(), TextColor.GOLD)));
+            TextComponent.of(coins.getCoins(), TextColor.GOLD),
+            TextComponent.of("given")));
   }
 
   @Command(
@@ -88,10 +89,17 @@ public final class CoinCommand {
       coins.addCoins(amount);
       player.sendMessage(
           TranslatableComponent.of(
-              "coins.set", TextColor.YELLOW, a.getName(), TextComponent.of(coins.getCoins())));
+              "coins.set",
+              TextColor.YELLOW,
+              a.getName(),
+              TextComponent.of(coins.getCoins()),
+              TextComponent.of("given")));
       a.sendMessage(
           TranslatableComponent.of(
-              "death.getcoins", TextColor.YELLOW, TextComponent.of(amount, TextColor.GOLD)));
+              "death.getcoins",
+              TextColor.YELLOW,
+              TextComponent.of(amount, TextColor.GOLD),
+              TextComponent.of("given")));
     }
   }
 }

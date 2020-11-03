@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.TextColor;
@@ -25,6 +26,7 @@ import tc.oc.pgm.destroyable.DestroyableDestroyedEvent;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.flag.event.FlagCaptureEvent;
 import tc.oc.pgm.goals.Contribution;
+import tc.oc.pgm.util.named.NameStyle;
 import tc.oc.pgm.wool.PlayerWoolPlaceEvent;
 
 @ListenerScope(MatchScope.RUNNING)
@@ -52,8 +54,13 @@ public class CoinsModule implements MatchModule, Listener {
     if (killer == event.getVictim()) {
       return;
     }
-    int random = (int) Math.floor(Math.random() * 10);
-    addCoins(killer, random);
+    int random = (int) Math.floor(Math.random() * 10) + 1;
+    TextComponent objective =
+        TextComponent.builder()
+            .append("killed ", TextColor.YELLOW)
+            .append(event.getVictim().getName(NameStyle.COLOR))
+            .build();
+    addCoins(killer, random, objective);
   }
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -70,7 +77,16 @@ public class CoinsModule implements MatchModule, Listener {
       }
       MatchPlayer destroyer = player.get();
       int random = (int) Math.floor(Math.random() * 10) + 20;
-      addCoins(destroyer, random);
+      TextComponent objective =
+          TextComponent.builder()
+              .append("destroyed ", TextColor.YELLOW)
+              .append(
+                  event
+                      .getDestroyable()
+                      .getComponentName()
+                      .color(event.getDestroyable().getOwner().getName().color()))
+              .build();
+      addCoins(destroyer, random, objective);
     }
   }
 
@@ -85,7 +101,12 @@ public class CoinsModule implements MatchModule, Listener {
     }
     MatchPlayer placer = player.get();
     int random = (int) Math.floor(Math.random() * 10) + 20;
-    addCoins(placer, random);
+    TextComponent objective =
+        TextComponent.builder()
+            .append("placed ", TextColor.YELLOW)
+            .append(event.getWool().getComponentName())
+            .build();
+    addCoins(placer, random, objective);
   }
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -102,7 +123,16 @@ public class CoinsModule implements MatchModule, Listener {
       }
       MatchPlayer leaker = player.get();
       int random = (int) Math.floor(Math.random() * 10) + 20;
-      addCoins(leaker, random);
+      TextComponent objective =
+          TextComponent.builder()
+              .append("leaked ", TextColor.YELLOW)
+              .append(
+                  event
+                      .getCore()
+                      .getComponentName()
+                      .color(event.getCore().getOwner().getChatPrefix().color()))
+              .build();
+      addCoins(leaker, random, objective);
     }
   }
 
@@ -121,7 +151,16 @@ public class CoinsModule implements MatchModule, Listener {
         continue;
       }
       int random = (int) Math.floor(Math.random() * 10) + 20;
-      addCoins(player, random);
+      TextComponent objective =
+          TextComponent.builder()
+              .append("captured ", TextColor.YELLOW)
+              .append(
+                  event
+                      .getControlPoint()
+                      .getComponentName()
+                      .color(event.getNewController().getChatPrefix().color()))
+              .build();
+      addCoins(player, random, objective);
     }
   }
 
@@ -135,7 +174,12 @@ public class CoinsModule implements MatchModule, Listener {
       return;
     }
     int random = (int) Math.floor(Math.random() * 10) + 20;
-    addCoins(capturer, random);
+    TextComponent objective =
+        TextComponent.builder()
+            .append("captured ", TextColor.WHITE)
+            .append(event.getGoal().getComponentName().color(event.getGoal().getChatColor()))
+            .build();
+    addCoins(capturer, random, objective);
   }
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -151,19 +195,24 @@ public class CoinsModule implements MatchModule, Listener {
           continue;
         }
         int random = (int) Math.floor(Math.random() * 10) + 20;
-        addCoins(winnerPlayer, random);
+        TextComponent objective =
+            TextComponent.builder().append("won the match", TextColor.YELLOW).build();
+        addCoins(winnerPlayer, random, objective);
       }
     }
   }
 
-  public void addCoins(MatchPlayer player, int amount) {
+  public void addCoins(MatchPlayer player, int amount, Component objective) {
     player.getCoins().addCoins(amount);
     TextComponent message =
         TextComponent.builder()
             .append("    ")
             .append(
                 TranslatableComponent.of(
-                    "death.getcoins", TextColor.YELLOW, TextComponent.of(amount, TextColor.GOLD)))
+                    "death.getcoins",
+                    TextColor.YELLOW,
+                    TextComponent.of(amount, TextColor.GOLD),
+                    objective))
             .build();
     player.sendMessage(message);
   }

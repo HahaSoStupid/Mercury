@@ -3,6 +3,7 @@ package tc.oc.pgm.wool;
 import java.util.Collections;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -64,11 +65,15 @@ public class MonumentWool extends TouchableGoal<MonumentWoolFactory>
 
   @Override
   public Component getTouchMessage(ParticipantState toucher, boolean self) {
-    return TranslatableComponent.of(
-        self ? "wool.touch.owned.you" : "wool.touch.owned.player",
-        toucher.getName(NameStyle.COLOR),
-        getComponentName(),
-        toucher.getParty().getName());
+    return TextComponent.builder()
+        .append("   ")
+        .append(
+            TranslatableComponent.of(
+                self ? "wool.touch.owned.you" : "wool.touch.owned.player",
+                toucher.getName(NameStyle.COLOR),
+                getComponentName(),
+                toucher.getParty().getName()))
+        .build();
   }
 
   @Override

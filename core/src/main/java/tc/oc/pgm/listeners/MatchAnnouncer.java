@@ -121,10 +121,10 @@ public class MatchAnnouncer implements Listener {
       } else {
         viewer.showTitle(title, subtitle, 0, 40, 40);
         viewer.sendMessage(
-            LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
-        viewer.sendMessage(title);
+            LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 100));
+        viewer.sendMessage(TextComponent.builder().append("   ").append(title).build());
         viewer.sendMessage(
-            LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 200));
+            LegacyFormatUtils.horizontalDivider(event.getWinner().getColor().asBungee(), 100));
         if (!(viewer.getParty() instanceof Observers)) viewer.sendMessage(subtitle);
       }
     }
