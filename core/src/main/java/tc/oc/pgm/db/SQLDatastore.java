@@ -154,7 +154,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
       @Override
       public String getFormat() {
-        return "REPLACE INTO settings VALUES (?, ?)";
+        return "REPLACE INTO settings VALUES (?,?)";
       }
 
       @Override
@@ -201,6 +201,7 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
   }
   // -------------------------------------------------------------------------
   public class SQLCoins extends CoinsImpl {
+
     SQLCoins(UUID id, long amount) {
       super(id, amount);
       submitQuery(new SelectQuery());
@@ -212,14 +213,19 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
       super.setCoins(amount);
 
       if (oldCoins != super.getCoins()) {
-        submitQuery(getCoins() <= 0 ? new InsertQuery(amount) : new UpdateQuery(amount));
+        submitQuery(new InsertQuery(amount));
       }
+    }
+
+    @Override
+    public long getCoins() {
+      return super.getCoins();
     }
 
     private class SelectQuery implements Query {
       @Override
       public String getFormat() {
-        return "SELECT amount FROM coins WHERE id = ? LIMIT 1";
+        return "SELECT amount FROM coins WHERE id = ?";
       }
 
       @Override
@@ -244,36 +250,13 @@ public class SQLDatastore extends ThreadSafeConnection implements Datastore {
 
       @Override
       public String getFormat() {
-        return "REPLACE INTO coins VALUES (?, ?)";
+        return "REPLACE INTO coins (id,amount) VALUES (?,?)";
       }
 
       @Override
       public void query(PreparedStatement statement) throws SQLException {
         statement.setString(1, getId().toString());
         statement.setLong(2, amount);
-
-        statement.executeUpdate();
-      }
-    }
-
-    private class UpdateQuery implements Query {
-
-      private final long amount;
-
-      private UpdateQuery(long amount) {
-        this.amount = amount;
-      }
-
-      @Override
-      public String getFormat() {
-        return "UPDATE coins SET amount = ? WHERE id = ?";
-      }
-
-      @Override
-      public void query(PreparedStatement statement) throws SQLException {
-        statement.setLong(1, amount);
-        statement.setString(2, getId().toString());
-
         statement.executeUpdate();
       }
     }

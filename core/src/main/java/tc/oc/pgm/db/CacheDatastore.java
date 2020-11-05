@@ -53,7 +53,7 @@ public class CacheDatastore implements Datastore {
                 });
     this.coins =
         CacheBuilder.newBuilder()
-            .softValues()
+            .maximumSize(Math.min(100, Bukkit.getMaxPlayers()))
             .build(
                 new CacheLoader<UUID, Coins>() {
                   @Override
@@ -89,7 +89,7 @@ public class CacheDatastore implements Datastore {
 
     usernames.invalidateAll();
     settings.invalidateAll();
-    activities.invalidateAll();
     coins.invalidateAll();
+    activities.invalidateAll();
   }
 }
