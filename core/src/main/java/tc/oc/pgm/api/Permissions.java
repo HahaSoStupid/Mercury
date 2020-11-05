@@ -9,7 +9,7 @@ import org.bukkit.permissions.PermissionDefault;
 public interface Permissions {
 
   // Root permission node
-  String ROOT = "pgm";
+  String ROOT = "mercury";
 
   // Root permission node for groups
   String GROUP = ROOT + ".group";
@@ -30,26 +30,31 @@ public interface Permissions {
   String DEFUSE = ROOT + ".defuse"; // Defuse tnt from observers using shears
   String DEBUG = ROOT + ".debug"; // Errors from map loading and debug commands
   String STAFF = ROOT + ".staff"; // Considered apart of the staff team
-  String RELOAD = ROOT + ".reload"; // Reload the PGM configuration
+  String RELOAD = ROOT + ".reload"; // Reload the configuration
   String KICK = ROOT + ".kick"; // Access to the /kick command
   String WARN = ROOT + ".warn"; // Access to the /warn command
   String MUTE = ROOT + ".mute"; // Access to the /mute command
   String BAN = ROOT + ".ban"; // Access to the /ban command
   String FREEZE = ROOT + ".freeze"; // Access to the /freeze command
   String VANISH = ROOT + ".vanish"; // Access to /vanish command
+  String DEV = ROOT + ".dev";
+  String MOD = ROOT + ".staff";
+  String DEF = ROOT + ".default";
+  String PREM = ROOT + ".premium";
+  String OP = ROOT + ".*";
 
   String MAPMAKER = GROUP + ".mapmaker"; // Permission group for mapmakers, defined in config.yml
 
   // Role-specific permission nodes
   Permission DEFAULT =
       new Permission(
-          "pgm.default",
+          DEF,
           PermissionDefault.TRUE,
           new ImmutableMap.Builder<String, Boolean>().put(JOIN, true).put(LEAVE, true).build());
 
   Permission PREMIUM =
       new Permission(
-          "pgm.premium",
+          PREM,
           PermissionDefault.FALSE,
           new ImmutableMap.Builder<String, Boolean>()
               .putAll(DEFAULT.getChildren())
@@ -61,7 +66,7 @@ public interface Permissions {
 
   Permission MODERATOR =
       new Permission(
-          "pgm.mod",
+          MOD,
           PermissionDefault.FALSE,
           new ImmutableMap.Builder<String, Boolean>()
               .putAll(PREMIUM.getChildren())
@@ -84,7 +89,7 @@ public interface Permissions {
 
   Permission DEVELOPER =
       new Permission(
-          "pgm.dev",
+          DEV,
           PermissionDefault.FALSE,
           new ImmutableMap.Builder<String, Boolean>()
               .putAll(MODERATOR.getChildren())
@@ -96,7 +101,7 @@ public interface Permissions {
 
   Permission ALL =
       new Permission(
-          "pgm.*",
+          OP,
           PermissionDefault.OP,
           new ImmutableMap.Builder<String, Boolean>()
               .putAll(DEVELOPER.getChildren())

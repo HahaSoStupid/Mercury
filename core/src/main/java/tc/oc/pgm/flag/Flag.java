@@ -298,8 +298,12 @@ public class Flag extends TouchableGoal<FlagDefinition> implements Listener {
     if (self) {
       return TranslatableComponent.of("flag.touch.you", getComponentName());
     } else {
-      return TranslatableComponent.of(
-          "flag.touch.player", getComponentName(), toucher.getName(NameStyle.COLOR));
+      return TextComponent.builder()
+          .append("   ")
+          .append(
+              TranslatableComponent.of(
+                  "flag.touch.player", getComponentName(), toucher.getName(NameStyle.COLOR)))
+          .build();
     }
   }
 

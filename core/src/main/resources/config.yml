@@ -54,7 +54,7 @@ restart:
 
 # Changes behaviour when players try to /join a match.
 join:
-  min-players: 1      # Minimum number of players before a match can start.
+  min-players: 2      # Minimum number of players before a match can start.
   anytime: true       # Can players join after a match has started?
   balance: true       # Can players be moved to make teams more balanced?
   queue: false        # Should players be put in a queue before joining the match?
@@ -70,12 +70,12 @@ gameplay:
 ui:
   sidebar: true    # Enable the side bar?
   tablist: true    # Enable the tab list?
-  ping: false      # Should tab list show real ping?
+  ping: true       # Should tab list show real ping?
   proximity: false # Should the proximity of objectives be visible?
   fireworks: true  # Spawn fireworks after objectives are completed?
   participants-see-observers: true # Can participants see observers in the tab list?
   flag-beams: false # Should everyone see floating wool flag beams?
-  touch: true # Should everyone see the touch message of the objective?
+  touch: true      # Should everyone see the touch message of the objective?
 
 # Overrides the header and footer of the side bar.
 sidebar:
@@ -115,7 +115,7 @@ chat:
 
 # A list of player groups, defined in order of priority, with highest on top.
 #
-# Each group is assigned the permission "pgm.group.<name>".
+# Each group is assigned the permission "mercury.group.<name>".
 groups:
   # A special group for server operators.
   op:
@@ -127,7 +127,7 @@ groups:
     # Description of group - Displayed when hovering over prefix/suffix
     description: "&7Administrator of the server"
     # URL shown below description when hovering over prefix/suffix
-    click-link: "https://pgm.dev/"
+    click-link: "https://merc-ury.dev/"
     
     # If you want to further customize prefix/suffix flairs, provide components here to override format
     # Only use if you know what you're doing
@@ -180,7 +180,7 @@ groups:
   mapmaker:
     prefix: "&9*"
     permissions:
-      - "+pgm.premium"
+      - "+mercury.premium"
 
 # Enables "community mode" with features such as /report, /freeze, /warn, and /ban.
 community:
