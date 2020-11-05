@@ -38,7 +38,7 @@ public interface Permissions {
   String FREEZE = ROOT + ".freeze"; // Access to the /freeze command
   String VANISH = ROOT + ".vanish"; // Access to /vanish command
   String DEV = ROOT + ".dev";
-  String MOD = ROOT + ".staff";
+  String MOD = ROOT + ".mod";
   String DEF = ROOT + ".default";
   String PREM = ROOT + ".premium";
   String OP = ROOT + ".*";
