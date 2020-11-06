@@ -73,6 +73,26 @@ public class StatsMatchModule implements MatchModule, Listener {
       }
     }
 
+    public int getKills() {
+      return kills;
+    }
+
+    public int getKillstreak() {
+      return killstreak;
+    }
+
+    public int getKillstreakMax() {
+      return killstreakMax;
+    }
+
+    public int getDeaths() {
+      return deaths;
+    }
+
+    public int getLongestBowKill() {
+      return longestBowKill;
+    }
+
     private final DecimalFormat decimalFormatKd = new DecimalFormat("#.##");
 
     public Component getBasicStatsMessage() {
@@ -129,9 +149,28 @@ public class StatsMatchModule implements MatchModule, Listener {
       }
 
       murdererStats.onMurder();
-
+      if (murdererStats.getKillstreak() == 5) {
+        sendKillstreak(murderer, 5, TextColor.GREEN);
+      } else if (murdererStats.getKillstreak() == 10) {
+        sendKillstreak(murderer, 10, TextColor.GOLD);
+      } else if (murdererStats.getKillstreak() == 15) {
+        sendKillstreak(murderer, 15, TextColor.RED);
+      } else if (murdererStats.getKillstreak() == 20) {
+        sendKillstreak(murderer, 20, TextColor.DARK_RED);
+      }
       sendPlayerStats(murderer, murdererStats);
     }
+  }
+
+  private void sendKillstreak(MatchPlayer murderer, int amount, TextColor color) {
+    murderer
+        .getMatch()
+        .sendMessage(
+            TranslatableComponent.of(
+                "broadcast.killstreak",
+                TextColor.WHITE,
+                murderer.getName(NameStyle.COLOR),
+                TextComponent.of(amount, color)));
   }
 
   @EventHandler
