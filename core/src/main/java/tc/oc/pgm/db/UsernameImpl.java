@@ -34,9 +34,10 @@ class UsernameImpl implements Username {
 
   @Override
   public Component getName(NameStyle style) {
-    return name == null
-        ? PlayerComponent.UNKNOWN
-        : PlayerComponent.of(Bukkit.getPlayer(id), name, style);
+    if (name != null) {
+      return PlayerComponent.of(Bukkit.getPlayer(id), name, style);
+    }
+    return PlayerComponent.UNKNOWN;
   }
 
   @Override

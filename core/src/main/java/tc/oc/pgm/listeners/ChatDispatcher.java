@@ -5,6 +5,7 @@ import app.ashcon.intake.parametric.annotation.Text;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
+import de.robingrether.idisguise.management.DisguiseManager;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -495,16 +496,24 @@ public class ChatDispatcher implements Listener {
   }
 
   private Component replaceFormat(MatchPlayer player, String message, String format) {
+    String messageCode = (names.getMessageColor(player.getBukkit())).toLowerCase();
+    ChatColor color = ChatColor.getByChar(messageCode.length() == 2 ? messageCode.charAt(1) : 'r');
+    if (color == null) {
+      color = ChatColor.RESET;
+    }
+    Player p = player.getBukkit();
     format =
         format.replace(
-            "<player>", "&r" + names.getDecoratedName(player.getBukkit(), player.getParty()));
-    String newFormat = ChatColor.translateAlternateColorCodes('&', format);
-    String color = names.getMessageColor(player.getBukkit());
-    newFormat =
-        newFormat.replace(
-            "<message>",
-            ((color == null || color.isEmpty() ? "" : TextColor.valueOf(color))
-                + ChatColor.stripColor(message)));
-    return TextComponent.builder().append(TextComponent.of(newFormat)).build();
+            "<player>",
+            (DisguiseManager.isDisguised(p)
+                ? names.getDecoratedNameWithoutFlair(p, player.getParty())
+                : names.getDecoratedName(p, player.getParty())));
+    format = ChatColor.translateAlternateColorCodes('&', format);
+    StringBuilder coloredMessage = new StringBuilder();
+    for (int i = 0; i < message.length(); i++) {
+      coloredMessage.append(color).append(message.charAt(i));
+    }
+    format = format.replace("<message>", coloredMessage);
+    return TextComponent.of(format);
   }
 }

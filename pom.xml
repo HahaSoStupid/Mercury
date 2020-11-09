@@ -60,6 +60,10 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <repository>
+            <id>robingrether-repo</id>
+            <url>http://repo.robingrether.de/</url>
+        </repository>
     </repositories>
 
     <distributionManagement>
@@ -78,11 +82,11 @@
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>compile</scope> <!-- Remember to exclude in shading -->
         </dependency>
-		<dependency>
-			<groupId>net.md-5</groupId>
-			<artifactId>bungeecord-chat</artifactId>
-			<version>1.16-R0.2</version>
-		</dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-chat</artifactId>
+            <version>1.16-R0.2</version>
+        </dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
@@ -94,6 +98,11 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.robingrether.idisguise</groupId>
+            <artifactId>idisguise-core</artifactId>
+            <version>5.8.2</version>
         </dependency>
 
         <!-- Multi-protocol library for future Minecraft versions -->

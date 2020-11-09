@@ -129,6 +129,24 @@ public final class TeamCommand {
   }
 
   @Command(
+      aliases = {"sizeall"},
+      desc = "Resize all the playing teams",
+      usage = "(reset | <max-players>)",
+      perms = Permissions.RESIZE)
+  public void sizeall(Audience audience, TeamMatchModule teams, String maxPlayers) {
+    for (Team team : getTeams(teams, "*")) {
+      final int max = TextParser.parseInteger(maxPlayers, Range.atLeast(team.getMinPlayers()));
+      final int overfill = (int) Math.ceil(1.25 * max);
+      team.setMaxSize(max, overfill);
+      audience.sendMessage(
+          TranslatableComponent.of(
+              "match.resize.max",
+              team.getName(),
+              TextComponent.of(team.getMaxPlayers(), TextColor.AQUA)));
+    }
+  }
+
+  @Command(
       aliases = {"min"},
       desc = "Set the min players on a team",
       usage = "<team> (reset | <min-players>)",

@@ -1,5 +1,7 @@
 package tc.oc.pgm.namedecorations;
 
+import de.robingrether.idisguise.disguise.PlayerDisguise;
+import de.robingrether.idisguise.management.DisguiseManager;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
@@ -29,13 +31,25 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
   @EventHandler
   public void onJoinMatch(PlayerJoinMatchEvent event) {
     Player player = event.getPlayer().getBukkit();
-    player.setDisplayName(getDecoratedName(player, event.getNewParty()));
+    if (DisguiseManager.isDisguised(player)) {
+      PlayerDisguise disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
+      player.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
+      disguise.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
+    } else {
+      player.setDisplayName(getDecoratedName(player, event.getNewParty()));
+    }
   }
 
   @EventHandler
   public void onPartyChange(PlayerPartyChangeEvent event) {
     Player player = event.getPlayer().getBukkit();
-    player.setDisplayName(getDecoratedName(player, event.getNewParty()));
+    if (DisguiseManager.isDisguised(player)) {
+      PlayerDisguise disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
+      player.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
+      disguise.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
+    } else {
+      player.setDisplayName(getDecoratedName(player, event.getNewParty()));
+    }
   }
 
   @EventHandler
@@ -43,19 +57,36 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
     if (event.getUUID() == null) return;
 
     final Player player = Bukkit.getPlayer(event.getUUID());
-    final MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
+    final MatchPlayer matchPlayer = getPlayer(player);
     if (matchPlayer == null) return;
 
-    matchPlayer.getBukkit().setDisplayName(getDecoratedName(player, matchPlayer.getParty()));
+    if (DisguiseManager.isDisguised(player)) {
+      PlayerDisguise disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
+      matchPlayer
+          .getBukkit()
+          .setDisplayName(getDecoratedNameWithoutFlair(player, matchPlayer.getParty()));
+      disguise.setDisplayName(getDecoratedNameWithoutFlair(player, matchPlayer.getParty()));
+    } else {
+      matchPlayer.getBukkit().setDisplayName(getDecoratedName(player, matchPlayer.getParty()));
+    }
   }
 
   @Override
   public String getDecoratedName(Player player, Party party) {
+    MatchPlayer matchPlayer = getPlayer(player);
+    String name = matchPlayer == null ? player.getName() : matchPlayer.getNameLegacy();
     return getPrefix(player.getUniqueId())
         + (party == null ? ChatColor.RESET : party.getColor())
-        + player.getName()
+        + name
         + getSuffix(player.getUniqueId())
         + ChatColor.WHITE;
+  }
+
+  @Override
+  public String getDecoratedNameWithoutFlair(Player player, Party party) {
+    MatchPlayer matchPlayer = getPlayer(player);
+    String name = matchPlayer == null ? player.getName() : matchPlayer.getNameLegacy();
+    return (party == null ? ChatColor.RESET : party.getColor()) + name + ChatColor.WHITE;
   }
 
   @Override
@@ -70,12 +101,13 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
 
   @Override
   public Component getDecoratedNameComponent(Player player, Party party) {
+    MatchPlayer matchPlayer = getPlayer(player);
+    String name = matchPlayer == null ? player.getName() : matchPlayer.getNameLegacy();
+    boolean disguised = matchPlayer != null && matchPlayer.isDisguised();
     return TextComponent.builder()
-        .append(getPrefixComponent(player.getUniqueId()))
-        .append(
-            player.getName(),
-            party == null ? TextColor.WHITE : TextFormatter.convert(party.getColor()))
-        .append(getSuffixComponent(player.getUniqueId()))
+        .append(disguised ? TextComponent.empty() : getPrefixComponent(player.getUniqueId()))
+        .append(name, party == null ? TextColor.WHITE : TextFormatter.convert(party.getColor()))
+        .append(disguised ? TextComponent.empty() : getSuffixComponent(player.getUniqueId()))
         .build();
   }
 
@@ -88,7 +120,7 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
   }
 
   public String getMessageColor(UUID uuid) {
-    return provider != null ? provider.getMessageColor(uuid) : "";
+    return provider != null ? provider.getMessageColor(uuid) : "&r";
   }
 
   public Component getPrefixComponent(UUID uuid) {
@@ -99,8 +131,8 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
     return provider != null ? provider.getSuffixComponent(uuid) : TextComponent.empty();
   }
 
-  public ChatColor getMessageChatColor(UUID uuid) {
-    return provider != null ? ChatColor.valueOf(provider.getMessageColor(uuid)) : ChatColor.RESET;
+  private MatchPlayer getPlayer(Player player) {
+    return PGM.get().getMatchManager().getPlayer(player);
   }
 
   @Override

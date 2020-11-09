@@ -2,11 +2,13 @@ package tc.oc.pgm.api;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import de.robingrether.idisguise.api.DisguiseAPI;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import org.bukkit.plugin.Plugin;
+import tc.oc.pgm.api.disguises.DisguisedManager;
 import tc.oc.pgm.api.map.MapLibrary;
 import tc.oc.pgm.api.map.MapOrder;
 import tc.oc.pgm.api.match.MatchManager;
@@ -41,6 +43,10 @@ public interface PGM extends Plugin {
   VanishManager getVanishManager();
 
   AtomicReference<PGM> GLOBAL = new AtomicReference<>(null);
+
+  DisguiseAPI getDisguiseAPI();
+
+  DisguisedManager getDisguisedManager();
 
   static PGM set(PGM pgm) {
     try {

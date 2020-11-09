@@ -1,5 +1,6 @@
 package tc.oc.pgm.api.player;
 
+import de.robingrether.idisguise.disguise.PlayerDisguise;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import org.bukkit.GameMode;
@@ -261,4 +262,14 @@ public interface MatchPlayer extends Audience, Named, Tickable, InventoryHolder 
 
   @Deprecated
   void internalSetParty(Party party);
+
+  boolean isDisguised();
+
+  boolean disguise(PlayerDisguise disguise);
+
+  boolean undisguise();
+
+  PlayerDisguise getDisguise();
+
+  void setDisguise(PlayerDisguise disguise);
 }

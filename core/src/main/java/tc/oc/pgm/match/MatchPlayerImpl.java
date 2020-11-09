@@ -2,6 +2,9 @@ package tc.oc.pgm.match;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import de.robingrether.idisguise.api.DisguiseAPI;
+import de.robingrether.idisguise.disguise.PlayerDisguise;
+import de.robingrether.idisguise.management.DisguiseManager;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -67,6 +71,7 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
   private final Logger logger;
   private final Match match;
   private final UUID id;
+  private final Player bukkitPlayer;
   private final WeakReference<Player> bukkit;
   private final AtomicReference<Party> party;
   private final AtomicReference<PlayerQuery> query;
@@ -76,6 +81,8 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
   private final AtomicBoolean protocolReady;
   private final AtomicInteger protocolVersion;
   private final AtomicBoolean vanished;
+  private final DisguiseAPI disguiseAPI;
+  private PlayerDisguise disguise;
 
   public MatchPlayerImpl(Match match, Player player) {
     this.logger =
@@ -83,6 +90,7 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
             checkNotNull(match).getLogger(), getClass(), checkNotNull(player).getName());
     this.match = match;
     this.id = player.getUniqueId();
+    this.bukkitPlayer = player;
     this.bukkit = new WeakReference<>(player);
     this.party = new AtomicReference<>(null);
     this.query = new AtomicReference<>(null);
@@ -92,6 +100,8 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
     this.vanished = new AtomicBoolean(false);
     this.protocolReady = new AtomicBoolean(ViaUtils.isReady(player));
     this.protocolVersion = new AtomicInteger(ViaUtils.getProtocolVersion(player));
+    this.disguiseAPI = PGM.get().getDisguiseAPI();
+    this.disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
   }
 
   @Override
@@ -219,7 +229,7 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
     this.getBukkit().setAllowFlight(allowFlight);
     this.getBukkit().spigot().setAffectsSpawning(participating);
     this.getBukkit().spigot().setCollidesWithEntities(participating);
-    this.getBukkit().setDisplayName(getBukkit().getDisplayName());
+    // this.getBukkit().setDisplayName(getBukkit().getDisplayName());
     this.resetVisibility();
   }
 
@@ -422,7 +432,11 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
 
   @Override
   public String getNameLegacy() {
-    return getBukkit().getName();
+    if (isDisguised() && getBukkit() != null && disguiseAPI != null) {
+      PlayerDisguise disguise = (PlayerDisguise) disguiseAPI.getDisguise(getBukkit());
+      return ChatColor.stripColor(disguise.getDisplayName());
+    }
+    return bukkitPlayer.getName();
   }
 
   @Override
@@ -481,5 +495,40 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
         .append("bukkit", getBukkit())
         .append("match", getMatch().getId())
         .build();
+  }
+
+  @Override
+  public boolean isDisguised() {
+    return PGM.get().getDisguisedManager().isDisguised(getBukkit());
+  }
+
+  @Override
+  public boolean disguise(PlayerDisguise disguise) {
+    if (disguiseAPI != null) {
+      setDisguise(disguise);
+      return PGM.get().getDisguisedManager().addDisguisedPlayer(bukkitPlayer, disguise);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean undisguise() {
+    if (disguiseAPI != null && isDisguised()) {
+      if (PGM.get().getDisguisedManager().removeDisguisedPlayer(getBukkit())) {
+        setDisguise(null);
+        return disguiseAPI.undisguise(this.getBukkit());
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public PlayerDisguise getDisguise() {
+    return disguise;
+  }
+
+  @Override
+  public void setDisguise(PlayerDisguise disguise) {
+    this.disguise = disguise;
   }
 }

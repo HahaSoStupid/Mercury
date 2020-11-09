@@ -1,10 +1,7 @@
 package tc.oc.pgm.modules;
 
 import java.text.DecimalFormat;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import net.kyori.text.Component;
@@ -14,6 +11,7 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -152,11 +150,13 @@ public class StatsMatchModule implements MatchModule, Listener {
       if (murdererStats.getKillstreak() == 5) {
         sendKillstreak(murderer, 5, TextColor.GREEN);
       } else if (murdererStats.getKillstreak() == 10) {
-        sendKillstreak(murderer, 10, TextColor.GOLD);
+        sendKillstreak(murderer, 10, TextColor.YELLOW);
       } else if (murdererStats.getKillstreak() == 15) {
-        sendKillstreak(murderer, 15, TextColor.RED);
+        sendKillstreak(murderer, 15, TextColor.GOLD);
       } else if (murdererStats.getKillstreak() == 20) {
-        sendKillstreak(murderer, 20, TextColor.DARK_RED);
+        sendKillstreak(murderer, 20, TextColor.RED);
+      } else if (murdererStats.getKillstreak() == 25) {
+        sendKillstreak(murderer, 25, TextColor.DARK_RED);
       }
       sendPlayerStats(murderer, murdererStats);
     }
@@ -171,6 +171,12 @@ public class StatsMatchModule implements MatchModule, Listener {
                 TextColor.WHITE,
                 murderer.getName(NameStyle.COLOR),
                 TextComponent.of(amount, color)));
+    Collection<MatchPlayer> players = murderer.getMatch().getPlayers();
+    for (MatchPlayer player : players) {
+      player
+          .getBukkit()
+          .playSound(player.getBukkit().getLocation(), Sound.ENDERDRAGON_GROWL, 1f, 0.7f);
+    }
   }
 
   @EventHandler

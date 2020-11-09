@@ -20,11 +20,10 @@ public class ControlPointAnnouncer implements Listener {
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onOwnerChange(ControllerChangeEvent event) {
     if (event.getControlPoint().isVisible()) {
-
       if (event.getOldController() != null && event.getNewController() == null) {
         this.match.sendMessage(
             LegacyFormatUtils.horizontalDivider(
-                event.getNewController().getColor().asBungee(), 200));
+                event.getOldController().getColor().asBungee(), 200));
         this.match.sendMessage(
             TextComponent.builder()
                 .append("   ")
@@ -34,7 +33,7 @@ public class ControlPointAnnouncer implements Listener {
                 .build());
         this.match.sendMessage(
             LegacyFormatUtils.horizontalDivider(
-                event.getNewController().getColor().asBungee(), 200));
+                event.getOldController().getColor().asBungee(), 200));
       } else if (event.getNewController() != null) {
         this.match.sendMessage(
             LegacyFormatUtils.horizontalDivider(

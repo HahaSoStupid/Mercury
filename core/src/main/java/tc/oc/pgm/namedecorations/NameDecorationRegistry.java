@@ -17,6 +17,8 @@ public interface NameDecorationRegistry extends Listener {
    */
   String getDecoratedName(Player player, Party party);
 
+  String getDecoratedNameWithoutFlair(Player player, Party party);
+
   /**
    * Get the message color of the player
    *

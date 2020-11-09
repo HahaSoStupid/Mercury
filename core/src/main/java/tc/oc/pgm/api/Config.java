@@ -12,6 +12,7 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.permissions.Permission;
 import tc.oc.pgm.api.map.factory.MapSourceFactory;
 
@@ -335,6 +336,12 @@ public interface Config {
     @Nullable
     default String getMessageColor() {
       return getFlair().getMessageColor();
+    }
+
+    @Nullable
+    default ChatColor getMessageChatColor() {
+      String color = getMessageColor();
+      return ChatColor.getByChar(color.charAt(1));
     }
 
     /**

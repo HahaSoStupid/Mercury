@@ -731,7 +731,7 @@ public final class PGMConfig implements Config {
       this.clickLink = link == null ? null : parseComponentLegacy(link);
 
       final String msgColor = config.getString("message-color");
-      this.messageColor = msgColor == null ? null : parseComponentLegacy(msgColor);
+      this.messageColor = msgColor == null ? "&r" : msgColor;
 
       final String prefixComp = config.getString("prefix-component");
       this.prefixOverride =
