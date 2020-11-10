@@ -1,6 +1,8 @@
 package tc.oc.pgm.db;
 
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.coins.Coins;
 
 public class CoinsImpl implements Coins {
@@ -26,16 +28,25 @@ public class CoinsImpl implements Coins {
   // @Override
   public void setCoins(long amount) {
     this.coins = amount;
+    if (PGM.get().getEconomy().isEnabled()
+        && !PGM.get().getEconomy().hasAccount(Bukkit.getOfflinePlayer(id))) {
+      PGM.get().getEconomy().createPlayerAccount(Bukkit.getOfflinePlayer(id));
+      PGM.get().getEconomy().depositPlayer(Bukkit.getOfflinePlayer(id), coins);
+    }
   }
 
   @Override
   public void addCoins(long amount) {
     setCoins(this.coins + amount);
+    if (PGM.get().getEconomy().isEnabled())
+      PGM.get().getEconomy().depositPlayer(Bukkit.getOfflinePlayer(id), amount);
   }
 
   @Override
   public void removeCoins(long amount) {
     setCoins(this.coins - amount);
+    if (PGM.get().getEconomy().isEnabled())
+      PGM.get().getEconomy().withdrawPlayer(Bukkit.getOfflinePlayer(id), amount);
   }
 
   @Override

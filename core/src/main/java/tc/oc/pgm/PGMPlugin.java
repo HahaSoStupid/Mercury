@@ -17,12 +17,14 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import tc.oc.pgm.api.Config;
 import tc.oc.pgm.api.Datastore;
@@ -81,6 +83,7 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
   private VanishManager vanishManager;
   private DisguisedManager disguisedManager;
   private DisguiseAPI disguiseAPI;
+  private Economy economy;
 
   public PGMPlugin() {
     super();
@@ -109,6 +112,7 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     if (Bukkit.getPluginManager().getPlugin("iDisguise") != null) {
       disguiseAPI = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
     }
+    setupEconomy();
 
     Modules.registerAll();
     Permissions.registerAll();
@@ -259,6 +263,19 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     }
   }
 
+  private boolean setupEconomy() {
+    if (getServer().getPluginManager().getPlugin("Vault") == null) {
+      return false;
+    }
+    RegisteredServiceProvider<Economy> rsp =
+        getServer().getServicesManager().getRegistration(Economy.class);
+    if (rsp == null) {
+      return false;
+    }
+    this.economy = rsp.getProvider();
+    return economy != null;
+  }
+
   @Override
   public DisguiseAPI getDisguiseAPI() {
     return disguiseAPI;
@@ -322,6 +339,11 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
   @Override
   public DisguisedManager getDisguisedManager() {
     return disguisedManager;
+  }
+
+  @Override
+  public Economy getEconomy() {
+    return economy;
   }
 
   private void registerCommands() {

@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.Plugin;
 import tc.oc.pgm.api.disguises.DisguisedManager;
 import tc.oc.pgm.api.map.MapLibrary;
@@ -47,6 +48,8 @@ public interface PGM extends Plugin {
   DisguiseAPI getDisguiseAPI();
 
   DisguisedManager getDisguisedManager();
+
+  Economy getEconomy();
 
   static PGM set(PGM pgm) {
     try {
