@@ -44,6 +44,7 @@ import tc.oc.pgm.api.party.Party;
 import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.api.player.MatchPlayerState;
 import tc.oc.pgm.api.player.ParticipantState;
+import tc.oc.pgm.api.player.PlayerTextComponent;
 import tc.oc.pgm.api.setting.SettingKey;
 import tc.oc.pgm.api.setting.SettingValue;
 import tc.oc.pgm.api.setting.Settings;
@@ -427,6 +428,7 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
 
   @Override
   public Component getName(NameStyle style) {
+    if (isDisguised()) return PlayerTextComponent.of(getBukkit(), style);
     return PlayerComponent.of(getBukkit(), style);
   }
 
@@ -514,10 +516,8 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
   @Override
   public boolean undisguise() {
     if (disguiseAPI != null && isDisguised()) {
-      if (PGM.get().getDisguisedManager().removeDisguisedPlayer(getBukkit())) {
-        setDisguise(null);
-        return disguiseAPI.undisguise(this.getBukkit());
-      }
+      setDisguise(null);
+      return PGM.get().getDisguisedManager().removeDisguisedPlayer(getBukkit());
     }
     return false;
   }

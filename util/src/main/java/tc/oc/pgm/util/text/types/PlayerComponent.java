@@ -99,6 +99,14 @@ public interface PlayerComponent {
     return builder.build();
   }
 
+  static String getName(Player player) {
+    if (DisguiseManager.isDisguised(player)) {
+      return ChatColor.stripColor(
+          ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
+    }
+    return player.getName();
+  }
+
   // What an offline or vanished username renders as
   static TextComponent.Builder formatOffline(String name, boolean plain) {
     TextComponent.Builder component = TextComponent.builder().append(name);
@@ -108,41 +116,23 @@ public interface PlayerComponent {
 
   // No color or formatting, simply the name
   static TextComponent.Builder formatPlain(Player player) {
-    String realName = player.getName();
-    if (DisguiseManager.isDisguised(player)) {
-      realName =
-          ChatColor.stripColor(
-              ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
-    }
-    return TextComponent.builder().append(realName);
+    return TextComponent.builder().append(getName(player));
   }
 
   // Color only
   static TextComponent.Builder formatColor(Player player) {
-    String realName = player.getName();
-    if (DisguiseManager.isDisguised(player)) {
-      realName =
-          ChatColor.stripColor(
-              ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
-    }
     String displayName = player.getDisplayName();
-    char colorChar = displayName.charAt((displayName.indexOf(realName) - 1));
+    char colorChar = displayName.charAt((displayName.indexOf(getName(player)) - 1));
     TextColor color = TextFormatter.convert(ChatColor.getByChar(colorChar));
-    return TextComponent.builder(realName, color);
+    return TextComponent.builder(getName(player), color);
   }
 
   // Color, flair & teleport
   static TextComponent.Builder formatFancy(Player player) {
-    String realName = player.getName();
-    if (!DisguiseManager.isDisguised(player)) {
-      realName =
-          ChatColor.stripColor(
-              ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
-    }
     TextComponent.Builder prefix = getPrefixComponent(player);
     TextComponent.Builder colorName = formatColor(player);
     TextComponent.Builder suffix = getSuffixComponent(player);
-    return formatTeleport(prefix.append(colorName).append(suffix), realName);
+    return formatTeleport(prefix.append(colorName).append(suffix), getName(player));
   }
 
   // Color, flair, death status, and vanish
@@ -196,13 +186,7 @@ public interface PlayerComponent {
 
   // Color, flair, vanished, and teleport
   static TextComponent.Builder formatVerbose(Player player) {
-    String realName = player.getName();
-    if (!DisguiseManager.isDisguised(player)) {
-      realName =
-          ChatColor.stripColor(
-              ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
-    }
-    return formatTeleport(formatConcise(player, true), realName);
+    return formatTeleport(formatConcise(player, true), getName(player));
   }
 
   /**
@@ -212,12 +196,11 @@ public interface PlayerComponent {
    * @return a component with a player's prefix
    */
   static TextComponent.Builder getPrefixComponent(Player player) {
-    String realName = player.getName();
     if (DisguiseManager.isDisguised(player)) {
       return stringToComponent("");
     }
     String displayName = player.getDisplayName();
-    String prefix = displayName.substring(0, displayName.indexOf(realName) - 2);
+    String prefix = displayName.substring(0, displayName.indexOf(getName(player)) - 2);
     return stringToComponent(prefix);
   }
 
@@ -228,11 +211,10 @@ public interface PlayerComponent {
    * @return a component with a player's prefix
    */
   static TextComponent.Builder getSuffixComponent(Player player) {
-    String realName = player.getName();
     if (DisguiseManager.isDisguised(player)) {
       return stringToComponent("");
     }
-    String[] parts = player.getDisplayName().split(realName);
+    String[] parts = player.getDisplayName().split(getName(player));
     if (parts.length != 2) {
       return TextComponent.builder();
     }

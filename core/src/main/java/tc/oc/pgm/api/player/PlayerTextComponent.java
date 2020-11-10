@@ -1,6 +1,8 @@
 package tc.oc.pgm.api.player;
 
 import com.google.common.collect.Lists;
+import de.robingrether.idisguise.disguise.PlayerDisguise;
+import de.robingrether.idisguise.management.DisguiseManager;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -96,6 +98,14 @@ public interface PlayerTextComponent {
     return builder.build();
   }
 
+  static String getName(Player player) {
+    if (PGM.get().getDisguiseAPI().isDisguised(player)) {
+      return ChatColor.stripColor(
+          ((PlayerDisguise) PGM.get().getDisguiseAPI().getDisguise(player)).getDisplayName());
+    }
+    return player.getName();
+  }
+
   // What an offline or vanished username renders as
   static TextComponent.Builder formatOffline(String name, boolean plain) {
     TextComponent.Builder component = TextComponent.builder().append(name);
@@ -105,23 +115,15 @@ public interface PlayerTextComponent {
 
   // No color or formatting, simply the name
   static TextComponent.Builder formatPlain(Player player) {
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return TextComponent.builder().append(matchPlayer.getNameLegacy());
-    }
-    return TextComponent.builder().append(player.getName());
+    return TextComponent.builder().append(getName(player));
   }
 
   // Color only
   static TextComponent.Builder formatColor(Player player) {
     String displayName = player.getDisplayName();
-    char colorChar = displayName.charAt((displayName.indexOf(player.getName()) - 1));
+    char colorChar = displayName.charAt((displayName.indexOf(getName(player)) - 1));
     TextColor color = TextFormatter.convert(ChatColor.getByChar(colorChar));
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return TextComponent.builder(matchPlayer.getNameLegacy(), color);
-    }
-    return TextComponent.builder(player.getName(), color);
+    return TextComponent.builder(getName(player), color);
   }
 
   // Color, flair & teleport
@@ -129,12 +131,7 @@ public interface PlayerTextComponent {
     TextComponent.Builder prefix = getPrefixComponent(player);
     TextComponent.Builder colorName = formatColor(player);
     TextComponent.Builder suffix = getSuffixComponent(player);
-
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return formatTeleport(colorName, matchPlayer.getNameLegacy());
-    }
-    return formatTeleport(prefix.append(colorName).append(suffix), player.getName());
+    return formatTeleport(prefix.append(colorName).append(suffix), getName(player));
   }
 
   // Color, flair, death status, and vanish
@@ -154,10 +151,6 @@ public interface PlayerTextComponent {
     if (viewer != null && player.equals(viewer)) {
       colorName.decoration(TextDecoration.BOLD, true);
     }
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return colorName;
-    }
 
     return prefix.append(colorName).append(suffix);
   }
@@ -174,10 +167,6 @@ public interface PlayerTextComponent {
     if (viewer != null && player.equals(viewer)) {
       colorName.decoration(TextDecoration.BOLD, true);
     }
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return colorName;
-    }
     return prefix.append(colorName).append(suffix);
   }
 
@@ -191,16 +180,12 @@ public interface PlayerTextComponent {
       colorName = formatVanished(colorName);
     }
 
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return colorName;
-    }
     return prefix.append(colorName).append(suffix);
   }
 
   // Color, flair, vanished, and teleport
   static TextComponent.Builder formatVerbose(Player player) {
-    return formatTeleport(formatConcise(player, true), player.getName());
+    return formatTeleport(formatConcise(player, true), getName(player));
   }
 
   /**
@@ -210,13 +195,11 @@ public interface PlayerTextComponent {
    * @return a component with a player's prefix
    */
   static TextComponent.Builder getPrefixComponent(Player player) {
-    String realName = player.getName();
-    String displayName = player.getDisplayName();
-    String prefix = displayName.substring(0, displayName.indexOf(realName) - 2);
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
-      return TextComponent.builder();
+    if (DisguiseManager.isDisguised(player)) {
+      return stringToComponent("");
     }
+    String displayName = player.getDisplayName();
+    String prefix = displayName.substring(0, displayName.indexOf(getName(player)) - 2);
     return stringToComponent(prefix);
   }
 
@@ -227,12 +210,11 @@ public interface PlayerTextComponent {
    * @return a component with a player's prefix
    */
   static TextComponent.Builder getSuffixComponent(Player player) {
-    String[] parts = player.getDisplayName().split(player.getName());
-    if (parts.length != 2) {
-      return TextComponent.builder();
+    if (DisguiseManager.isDisguised(player)) {
+      return stringToComponent("");
     }
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if (matchPlayer != null && matchPlayer.isDisguised()) {
+    String[] parts = player.getDisplayName().split(getName(player));
+    if (parts.length != 2) {
       return TextComponent.builder();
     }
     return stringToComponent(parts[1]);
@@ -243,6 +225,9 @@ public interface PlayerTextComponent {
     boolean isColor = false;
     TextFormat color = null;
     List<TextFormat> decorations = Lists.newArrayList();
+    if (str.isEmpty()) {
+      return component.color(TextColor.WHITE);
+    }
     for (int i = 0; i < str.length(); i++) {
       if (str.charAt(i) == ChatColor.COLOR_CHAR) {
         isColor = true;

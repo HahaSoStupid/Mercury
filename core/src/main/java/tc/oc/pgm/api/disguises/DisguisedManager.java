@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
@@ -18,7 +19,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.Permissions;
 import tc.oc.pgm.api.event.NameDecorationChangeEvent;
-import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.match.MatchManager;
 import tc.oc.pgm.api.match.MatchPhase;
 import tc.oc.pgm.api.match.event.MatchLoadEvent;
@@ -43,20 +43,17 @@ public class DisguisedManager implements Listener {
   }
 
   public boolean addDisguisedPlayer(Player player, PlayerDisguise disguise) {
-    if (player == null) return false;
-    if (disguiseAPI == null) return false;
+    if (player == null || disguiseAPI == null) return false;
     if (!disguisedPlayers.contains(player.getUniqueId())) {
-      disguiseAPI.disguise(player, disguise);
-      return disguisedPlayers.add(player.getUniqueId());
+      disguisedPlayers.add(player.getUniqueId());
+      return disguiseAPI.disguise(player, disguise);
     }
     return false;
   }
 
   public boolean removeDisguisedPlayer(Player player) {
-    if (player == null) return false;
-    if (disguiseAPI == null) return false;
-    disguiseAPI.undisguise(player);
-    return disguisedPlayers.remove(player.getUniqueId());
+    if (player == null || disguiseAPI == null) return false;
+    return (disguisedPlayers.remove(player.getUniqueId()) && disguiseAPI.undisguise(player));
   }
 
   public List<UUID> getDisguisedPlayers() {
@@ -65,9 +62,12 @@ public class DisguisedManager implements Listener {
   }
 
   public boolean isDisguised(Player player) {
-    if (player == null) return false;
-    if (disguiseAPI == null) return false;
-    return disguisedPlayers.contains(player.getUniqueId());
+    if (player == null || disguiseAPI == null) return false;
+    return disguisedPlayers.contains(player.getUniqueId()) || disguiseAPI.isDisguised(player);
+  }
+
+  public boolean resolvePlayer(Player player) {
+    return (player != null && matchManager.getPlayer(player) != null);
   }
 
   @Command(
@@ -76,15 +76,19 @@ public class DisguisedManager implements Listener {
       usage = "[a player name]",
       perms = Permissions.STAFF)
   public void hide(Audience audience, CommandSender sender, String name) {
-    if (disguiseAPI == null) return;
+    if (disguiseAPI == null) {
+      audience.sendMessage(TextComponent.of("Disguises aren't available!"));
+      return;
+    }
     if (sender instanceof Player) {
       Player p = (Player) sender;
       if (isDisguised(p)) {
         String displayName = ChatColor.translateAlternateColorCodes('&', name);
         displayName = ChatColor.stripColor(displayName);
         PlayerDisguise disguise = new PlayerDisguise(name, displayName);
-        addDisguisedPlayer(p, disguise);
         MatchPlayer matchPlayer = matchManager.getPlayer(p);
+        if (matchPlayer == null) return;
+        matchPlayer.disguise(disguise);
         matchPlayer
             .getBukkit()
             .setDisplayName(named.getDecoratedNameWithoutFlair(p, matchPlayer.getParty()));
@@ -98,9 +102,9 @@ public class DisguisedManager implements Listener {
       String displayName = ChatColor.translateAlternateColorCodes('&', name);
       displayName = ChatColor.stripColor(displayName);
       PlayerDisguise disguise = new PlayerDisguise(name, displayName);
-      removeDisguisedPlayer(p);
-      addDisguisedPlayer(p, disguise);
       MatchPlayer matchPlayer = matchManager.getPlayer(p);
+      if (matchPlayer == null) return;
+      matchPlayer.disguise(disguise);
       matchPlayer
           .getBukkit()
           .setDisplayName(named.getDecoratedNameWithoutFlair(p, matchPlayer.getParty()));
@@ -115,28 +119,34 @@ public class DisguisedManager implements Listener {
   }
 
   @Command(
-      aliases = {"unhide"},
-      desc = "Reveals yourself",
+      aliases = {"unhide", "reveal"},
+      desc = "Reveals yourself or a player",
+      usage = "[a player] - defaults to yourself",
       perms = Permissions.STAFF)
-  public void unhide(Audience audience, CommandSender sender, Match match) {
+  public void unhide(Audience audience, CommandSender sender, @Nullable MatchPlayer target) {
     if (disguiseAPI == null) return;
     if (sender instanceof Player) {
-      Player p = (Player) sender;
-      if (isDisguised(p)) {
-        removeDisguisedPlayer(p);
-        disguiseAPI.undisguise(p);
-        MatchPlayer matchPlayer = matchManager.getPlayer(p);
-        if (matchPlayer != null) {
-          matchPlayer.getMatch().callEvent(new NameDecorationChangeEvent(matchPlayer.getId()));
+      if (target == null) {
+        Player p = (Player) sender;
+        if (isDisguised(p)) {
+          MatchPlayer matchPlayer = matchManager.getPlayer(p);
+          if (matchPlayer != null) {
+            matchPlayer.undisguise();
+            matchPlayer.getMatch().callEvent(new NameDecorationChangeEvent(matchPlayer.getId()));
+          }
+          audience.sendWarning(TextComponent.of(("You have been revealed")));
+          return;
         }
-        audience.sendWarning(
-            TextComponent.of(
-                ("You have been disguised as "
-                    + ((PlayerDisguise) disguiseAPI.getDisguise(p)).getDisplayName()),
-                TextColor.GREEN));
+        audience.sendWarning(TextComponent.of("You are not disguised!", TextColor.RED));
+      }
+      Player p = target.getBukkit();
+      if (isDisguised(p)) {
+        target.undisguise();
+        target.getMatch().callEvent(new NameDecorationChangeEvent(target.getId()));
+        target.sendWarning(TextComponent.of(("You have been revealed")));
         return;
       }
-      audience.sendWarning(TextComponent.of("You are not disguised!", TextColor.RED));
+      audience.sendWarning(TextComponent.of("Player is not disguised!", TextColor.RED));
     }
   }
 
@@ -155,9 +165,8 @@ public class DisguisedManager implements Listener {
     if (disguiseAPI == null) return;
     Collection<MatchPlayer> matchPlayers = event.getMatch().getPlayers();
     for (MatchPlayer matchPlayer : matchPlayers) {
-      if (matchPlayer.isDisguised()) {
-        disguiseAPI.undisguise(matchPlayer.getBukkit());
-        disguiseAPI.disguise(matchPlayer.getBukkit(), matchPlayer.getDisguise());
+      if (matchPlayer.isDisguised() && !disguiseAPI.isDisguised(matchPlayer.getBukkit())) {
+        matchPlayer.disguise(matchPlayer.getDisguise());
       }
     }
   }
@@ -167,9 +176,8 @@ public class DisguisedManager implements Listener {
     if (disguiseAPI == null) return;
     Collection<MatchPlayer> matchPlayers = event.getMatch().getPlayers();
     for (MatchPlayer matchPlayer : matchPlayers) {
-      if (matchPlayer.isDisguised()) {
-        disguiseAPI.undisguise(matchPlayer.getBukkit());
-        disguiseAPI.disguise(matchPlayer.getBukkit(), matchPlayer.getDisguise());
+      if (matchPlayer.isDisguised() && !disguiseAPI.isDisguised(matchPlayer.getBukkit())) {
+        matchPlayer.disguise(matchPlayer.getDisguise());
       }
     }
   }
@@ -179,9 +187,8 @@ public class DisguisedManager implements Listener {
     if (event.getNewPhase() == MatchPhase.IDLE) {
       Collection<MatchPlayer> matchPlayers = event.getMatch().getPlayers();
       for (MatchPlayer matchPlayer : matchPlayers) {
-        if (matchPlayer.isDisguised()) {
-          disguiseAPI.undisguise(matchPlayer.getBukkit());
-          disguiseAPI.disguise(matchPlayer.getBukkit(), matchPlayer.getDisguise());
+        if (matchPlayer.isDisguised() && !disguiseAPI.isDisguised(matchPlayer.getBukkit())) {;
+          matchPlayer.disguise(matchPlayer.getDisguise());
         }
       }
     }
