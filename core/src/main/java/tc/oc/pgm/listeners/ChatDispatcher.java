@@ -496,7 +496,7 @@ public class ChatDispatcher implements Listener {
   }
 
   private Component replaceFormat(MatchPlayer player, String message, String format) {
-    String messageCode = (names.getMessageColor(player.getBukkit())).toLowerCase();
+    String messageCode = names.getMessageColor(player.getBukkit());
     ChatColor color = ChatColor.getByChar(messageCode.length() == 2 ? messageCode.charAt(1) : 'r');
     if (color == null) {
       color = ChatColor.RESET;

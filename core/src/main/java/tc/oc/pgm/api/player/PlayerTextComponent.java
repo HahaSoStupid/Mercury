@@ -18,7 +18,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.util.named.NameStyle;
 import tc.oc.pgm.util.text.TextFormatter;
 
@@ -53,27 +52,22 @@ public interface PlayerTextComponent {
   static Component of(
       @Nullable Player player, String defName, NameStyle style, @Nullable Player viewer) {
     // Offline player or not visible
-    MatchPlayer matchPlayer = PGM.get().getMatchManager().getPlayer(player);
-    if ((player == null || !player.isOnline())
-        || (matchPlayer != null && matchPlayer.isDisguised())) {
+    if ((player == null || !player.isOnline())) {
       return formatOffline(defName, style == NameStyle.PLAIN).build();
     }
 
+    String realName = getName(player);
+
     // For name styles that don't allow vanished, make vanished appear offline
     if (!style.showVanish && isVanished(player)) {
-      return formatOffline(player.getName(), style == NameStyle.PLAIN).build();
+      return formatOffline(realName, style == NameStyle.PLAIN).build();
     }
 
     TextComponent.Builder builder = TextComponent.builder();
 
     switch (style) {
       case COLOR:
-        builder =
-            formatTeleport(
-                formatColor(player),
-                matchPlayer != null && matchPlayer.isDisguised()
-                    ? matchPlayer.getNameLegacy()
-                    : player.getName());
+        builder = formatColor(player);
         break;
       case CONCISE:
         builder = formatConcise(player, false);
@@ -99,11 +93,18 @@ public interface PlayerTextComponent {
   }
 
   static String getName(Player player) {
-    if (PGM.get().getDisguiseAPI().isDisguised(player)) {
+    if (DisguiseManager.isDisguised(player)) {
       return ChatColor.stripColor(
-          ((PlayerDisguise) PGM.get().getDisguiseAPI().getDisguise(player)).getDisplayName());
+          ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
     }
     return player.getName();
+  }
+
+  static String getDisplayName(Player player) {
+    if (DisguiseManager.isDisguised(player)) {
+      return ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName();
+    }
+    return player.getDisplayName();
   }
 
   // What an offline or vanished username renders as
@@ -120,7 +121,7 @@ public interface PlayerTextComponent {
 
   // Color only
   static TextComponent.Builder formatColor(Player player) {
-    String displayName = player.getDisplayName();
+    String displayName = getDisplayName(player);
     char colorChar = displayName.charAt((displayName.indexOf(getName(player)) - 1));
     TextColor color = TextFormatter.convert(ChatColor.getByChar(colorChar));
     return TextComponent.builder(getName(player), color);
@@ -198,7 +199,7 @@ public interface PlayerTextComponent {
     if (DisguiseManager.isDisguised(player)) {
       return stringToComponent("");
     }
-    String displayName = player.getDisplayName();
+    String displayName = getDisplayName(player);
     String prefix = displayName.substring(0, displayName.indexOf(getName(player)) - 2);
     return stringToComponent(prefix);
   }
@@ -213,7 +214,7 @@ public interface PlayerTextComponent {
     if (DisguiseManager.isDisguised(player)) {
       return stringToComponent("");
     }
-    String[] parts = player.getDisplayName().split(getName(player));
+    String[] parts = getDisplayName(player).split(getName(player));
     if (parts.length != 2) {
       return TextComponent.builder();
     }

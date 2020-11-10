@@ -2,7 +2,6 @@ package tc.oc.pgm.match;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import de.robingrether.idisguise.disguise.PlayerDisguise;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,8 +67,9 @@ public class MatchPlayerStateImpl implements MatchPlayerState, MultiAudience {
   @Override
   public Component getName(NameStyle style) {
     MatchPlayer player = match.getPlayer(uuid);
-    if (PGM.get().getDisguiseAPI().isDisguised(player.getBukkit()))
+    if (player != null && player.isDisguised()) {
       return PlayerTextComponent.of(player.getBukkit(), style);
+    }
     return PlayerComponent.of(player.getBukkit(), username, style);
   }
 
@@ -77,9 +77,7 @@ public class MatchPlayerStateImpl implements MatchPlayerState, MultiAudience {
   public String getNameLegacy() {
     MatchPlayer player = match.getPlayer(uuid);
     if (PGM.get().getDisguiseAPI().isDisguised(player.getBukkit()))
-      return ChatColor.stripColor(
-          ((PlayerDisguise) PGM.get().getDisguiseAPI().getDisguise(player.getBukkit()))
-              .getDisplayName());
+      return ChatColor.stripColor(player.getDisguise().getDisplayName());
     return username;
   }
 

@@ -438,7 +438,7 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
       PlayerDisguise disguise = (PlayerDisguise) disguiseAPI.getDisguise(getBukkit());
       return ChatColor.stripColor(disguise.getDisplayName());
     }
-    return bukkitPlayer.getName();
+    return getBukkit().getName();
   }
 
   @Override

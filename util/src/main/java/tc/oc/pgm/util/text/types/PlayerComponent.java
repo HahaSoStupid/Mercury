@@ -58,12 +58,7 @@ public interface PlayerComponent {
       return formatOffline(defName, style == NameStyle.PLAIN).build();
     }
 
-    String realName = player.getName();
-    if (DisguiseManager.isDisguised(player)) {
-      realName =
-          ChatColor.stripColor(
-              ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
-    }
+    String realName = getName(player);
 
     // For name styles that don't allow vanished, make vanished appear offline
     if (!style.showVanish && isVanished(player)) {
@@ -74,7 +69,7 @@ public interface PlayerComponent {
 
     switch (style) {
       case COLOR:
-        builder = formatTeleport(formatColor(player), realName);
+        builder = formatColor(player);
         break;
       case CONCISE:
         builder = formatConcise(player, false);
@@ -107,6 +102,13 @@ public interface PlayerComponent {
     return player.getName();
   }
 
+  static String getDisplayName(Player player) {
+    if (DisguiseManager.isDisguised(player)) {
+      return ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName();
+    }
+    return player.getDisplayName();
+  }
+
   // What an offline or vanished username renders as
   static TextComponent.Builder formatOffline(String name, boolean plain) {
     TextComponent.Builder component = TextComponent.builder().append(name);
@@ -121,7 +123,7 @@ public interface PlayerComponent {
 
   // Color only
   static TextComponent.Builder formatColor(Player player) {
-    String displayName = player.getDisplayName();
+    String displayName = getDisplayName(player);
     char colorChar = displayName.charAt((displayName.indexOf(getName(player)) - 1));
     TextColor color = TextFormatter.convert(ChatColor.getByChar(colorChar));
     return TextComponent.builder(getName(player), color);
@@ -199,7 +201,7 @@ public interface PlayerComponent {
     if (DisguiseManager.isDisguised(player)) {
       return stringToComponent("");
     }
-    String displayName = player.getDisplayName();
+    String displayName = getDisplayName(player);
     String prefix = displayName.substring(0, displayName.indexOf(getName(player)) - 2);
     return stringToComponent(prefix);
   }
@@ -214,7 +216,7 @@ public interface PlayerComponent {
     if (DisguiseManager.isDisguised(player)) {
       return stringToComponent("");
     }
-    String[] parts = player.getDisplayName().split(getName(player));
+    String[] parts = getDisplayName(player).split(getName(player));
     if (parts.length != 2) {
       return TextComponent.builder();
     }
