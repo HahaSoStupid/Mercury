@@ -1,5 +1,6 @@
 package tc.oc.pgm.util.tablist;
 
+import de.robingrether.idisguise.api.DisguiseEvent;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -147,5 +148,10 @@ public class TabManager implements Listener {
     if (entry instanceof PlayerTabEntry) {
       ((PlayerTabEntry) entry).onSkinPartsChange(event);
     }
+  }
+
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+  public void onDisguise(DisguiseEvent event) {
+    this.removePlayerEntry(event.getPlayer());
   }
 }
