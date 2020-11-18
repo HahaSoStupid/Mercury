@@ -2,9 +2,6 @@ package tc.oc.pgm.match;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import de.robingrether.idisguise.api.DisguiseAPI;
-import de.robingrether.idisguise.disguise.PlayerDisguise;
-import de.robingrether.idisguise.management.DisguiseManager;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +13,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
-import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -44,7 +40,6 @@ import tc.oc.pgm.api.party.Party;
 import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.api.player.MatchPlayerState;
 import tc.oc.pgm.api.player.ParticipantState;
-import tc.oc.pgm.api.player.PlayerTextComponent;
 import tc.oc.pgm.api.setting.SettingKey;
 import tc.oc.pgm.api.setting.SettingValue;
 import tc.oc.pgm.api.setting.Settings;
@@ -82,8 +77,6 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
   private final AtomicBoolean protocolReady;
   private final AtomicInteger protocolVersion;
   private final AtomicBoolean vanished;
-  private final DisguiseAPI disguiseAPI;
-  private PlayerDisguise disguise;
 
   public MatchPlayerImpl(Match match, Player player) {
     this.logger =
@@ -101,8 +94,6 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
     this.vanished = new AtomicBoolean(false);
     this.protocolReady = new AtomicBoolean(ViaUtils.isReady(player));
     this.protocolVersion = new AtomicInteger(ViaUtils.getProtocolVersion(player));
-    this.disguiseAPI = PGM.get().getDisguiseAPI();
-    this.disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
   }
 
   @Override
@@ -428,16 +419,11 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
 
   @Override
   public Component getName(NameStyle style) {
-    if (isDisguised()) return PlayerTextComponent.of(getBukkit(), style);
     return PlayerComponent.of(getBukkit(), style);
   }
 
   @Override
   public String getNameLegacy() {
-    if (isDisguised() && getBukkit() != null && disguiseAPI != null) {
-      PlayerDisguise disguise = (PlayerDisguise) disguiseAPI.getDisguise(getBukkit());
-      return ChatColor.stripColor(disguise.getDisplayName());
-    }
     return getBukkit().getName();
   }
 
@@ -497,38 +483,5 @@ public class MatchPlayerImpl implements MatchPlayer, PlayerAudience, Comparable<
         .append("bukkit", getBukkit())
         .append("match", getMatch().getId())
         .build();
-  }
-
-  @Override
-  public boolean isDisguised() {
-    return PGM.get().getDisguisedManager().isDisguised(getBukkit());
-  }
-
-  @Override
-  public boolean disguise(PlayerDisguise disguise) {
-    if (disguiseAPI != null) {
-      setDisguise(disguise);
-      return PGM.get().getDisguisedManager().addDisguisedPlayer(bukkitPlayer, disguise);
-    }
-    return false;
-  }
-
-  @Override
-  public boolean undisguise() {
-    if (disguiseAPI != null && isDisguised()) {
-      setDisguise(null);
-      return PGM.get().getDisguisedManager().removeDisguisedPlayer(getBukkit());
-    }
-    return false;
-  }
-
-  @Override
-  public PlayerDisguise getDisguise() {
-    return disguise;
-  }
-
-  @Override
-  public void setDisguise(PlayerDisguise disguise) {
-    this.disguise = disguise;
   }
 }

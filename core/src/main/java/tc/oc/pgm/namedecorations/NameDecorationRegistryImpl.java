@@ -1,7 +1,5 @@
 package tc.oc.pgm.namedecorations;
 
-import de.robingrether.idisguise.disguise.PlayerDisguise;
-import de.robingrether.idisguise.management.DisguiseManager;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.kyori.text.Component;
@@ -31,25 +29,13 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
   @EventHandler
   public void onJoinMatch(PlayerJoinMatchEvent event) {
     Player player = event.getPlayer().getBukkit();
-    if (DisguiseManager.isDisguised(player)) {
-      PlayerDisguise disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
-      player.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
-      disguise.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
-    } else {
-      player.setDisplayName(getDecoratedName(player, event.getNewParty()));
-    }
+    player.setDisplayName(getDecoratedName(player, event.getNewParty()));
   }
 
   @EventHandler
   public void onPartyChange(PlayerPartyChangeEvent event) {
     Player player = event.getPlayer().getBukkit();
-    if (DisguiseManager.isDisguised(player)) {
-      PlayerDisguise disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
-      player.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
-      disguise.setDisplayName(getDecoratedNameWithoutFlair(player, event.getNewParty()));
-    } else {
-      player.setDisplayName(getDecoratedName(player, event.getNewParty()));
-    }
+    player.setDisplayName(getDecoratedName(player, event.getNewParty()));
   }
 
   @EventHandler
@@ -59,16 +45,7 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
     final Player player = Bukkit.getPlayer(event.getUUID());
     final MatchPlayer matchPlayer = getPlayer(player);
     if (matchPlayer == null) return;
-
-    if (DisguiseManager.isDisguised(player)) {
-      PlayerDisguise disguise = (PlayerDisguise) DisguiseManager.getDisguise(player);
-      matchPlayer
-          .getBukkit()
-          .setDisplayName(getDecoratedNameWithoutFlair(player, matchPlayer.getParty()));
-      disguise.setDisplayName(getDecoratedNameWithoutFlair(player, matchPlayer.getParty()));
-    } else {
-      matchPlayer.getBukkit().setDisplayName(getDecoratedName(player, matchPlayer.getParty()));
-    }
+    matchPlayer.getBukkit().setDisplayName(getDecoratedName(player, matchPlayer.getParty()));
   }
 
   @Override
@@ -103,11 +80,10 @@ public class NameDecorationRegistryImpl implements NameDecorationRegistry, Liste
   public Component getDecoratedNameComponent(Player player, Party party) {
     MatchPlayer matchPlayer = getPlayer(player);
     String name = matchPlayer == null ? player.getName() : matchPlayer.getNameLegacy();
-    boolean disguised = matchPlayer != null && matchPlayer.isDisguised();
     return TextComponent.builder()
-        .append(disguised ? TextComponent.empty() : getPrefixComponent(player.getUniqueId()))
+        .append(getPrefixComponent(player.getUniqueId()))
         .append(name, party == null ? TextColor.WHITE : TextFormatter.convert(party.getColor()))
-        .append(disguised ? TextComponent.empty() : getSuffixComponent(player.getUniqueId()))
+        .append(getSuffixComponent(player.getUniqueId()))
         .build();
   }
 

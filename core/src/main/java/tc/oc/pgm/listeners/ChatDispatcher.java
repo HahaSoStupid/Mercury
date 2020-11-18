@@ -5,7 +5,6 @@ import app.ashcon.intake.parametric.annotation.Text;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
-import de.robingrether.idisguise.management.DisguiseManager;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -502,12 +501,7 @@ public class ChatDispatcher implements Listener {
       color = ChatColor.RESET;
     }
     Player p = player.getBukkit();
-    format =
-        format.replace(
-            "<player>",
-            (DisguiseManager.isDisguised(p)
-                ? names.getDecoratedNameWithoutFlair(p, player.getParty())
-                : names.getDecoratedName(p, player.getParty())));
+    format = format.replace("<player>", names.getDecoratedName(p, player.getParty()));
     format = ChatColor.translateAlternateColorCodes('&', format);
     StringBuilder coloredMessage = new StringBuilder();
     for (int i = 0; i < message.length(); i++) {

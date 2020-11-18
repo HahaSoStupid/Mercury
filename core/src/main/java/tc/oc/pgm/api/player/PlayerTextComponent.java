@@ -1,8 +1,6 @@
 package tc.oc.pgm.api.player;
 
 import com.google.common.collect.Lists;
-import de.robingrether.idisguise.disguise.PlayerDisguise;
-import de.robingrether.idisguise.management.DisguiseManager;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -93,17 +91,10 @@ public interface PlayerTextComponent {
   }
 
   static String getName(Player player) {
-    if (DisguiseManager.isDisguised(player)) {
-      return ChatColor.stripColor(
-          ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName());
-    }
     return player.getName();
   }
 
   static String getDisplayName(Player player) {
-    if (DisguiseManager.isDisguised(player)) {
-      return ((PlayerDisguise) DisguiseManager.getDisguise(player)).getDisplayName();
-    }
     return player.getDisplayName();
   }
 
@@ -196,9 +187,6 @@ public interface PlayerTextComponent {
    * @return a component with a player's prefix
    */
   static TextComponent.Builder getPrefixComponent(Player player) {
-    if (DisguiseManager.isDisguised(player)) {
-      return stringToComponent("");
-    }
     String displayName = getDisplayName(player);
     String prefix = displayName.substring(0, displayName.indexOf(getName(player)) - 2);
     return stringToComponent(prefix);
@@ -211,9 +199,6 @@ public interface PlayerTextComponent {
    * @return a component with a player's prefix
    */
   static TextComponent.Builder getSuffixComponent(Player player) {
-    if (DisguiseManager.isDisguised(player)) {
-      return stringToComponent("");
-    }
     String[] parts = getDisplayName(player).split(getName(player));
     if (parts.length != 2) {
       return TextComponent.builder();

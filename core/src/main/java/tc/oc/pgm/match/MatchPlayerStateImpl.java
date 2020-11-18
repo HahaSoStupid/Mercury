@@ -6,18 +6,15 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import net.kyori.text.Component;
-import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
-import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.party.Party;
 import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.api.player.MatchPlayerState;
-import tc.oc.pgm.api.player.PlayerTextComponent;
 import tc.oc.pgm.util.chat.Audience;
 import tc.oc.pgm.util.chat.MultiAudience;
 import tc.oc.pgm.util.named.NameStyle;
@@ -67,17 +64,12 @@ public class MatchPlayerStateImpl implements MatchPlayerState, MultiAudience {
   @Override
   public Component getName(NameStyle style) {
     MatchPlayer player = match.getPlayer(uuid);
-    if (player != null && player.isDisguised()) {
-      return PlayerTextComponent.of(player.getBukkit(), style);
-    }
     return PlayerComponent.of(player.getBukkit(), username, style);
   }
 
   @Override
   public String getNameLegacy() {
     MatchPlayer player = match.getPlayer(uuid);
-    if (PGM.get().getDisguiseAPI().isDisguised(player.getBukkit()))
-      return ChatColor.stripColor(player.getDisguise().getDisplayName());
     return username;
   }
 

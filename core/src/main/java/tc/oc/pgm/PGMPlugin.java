@@ -1,7 +1,6 @@
 package tc.oc.pgm;
 
 import com.google.common.collect.Lists;
-import de.robingrether.idisguise.api.DisguiseAPI;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,21 +16,18 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import net.md_5.bungee.api.ChatColor;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import tc.oc.pgm.api.Config;
 import tc.oc.pgm.api.Datastore;
 import tc.oc.pgm.api.Modules;
 import tc.oc.pgm.api.PGM;
 import tc.oc.pgm.api.Permissions;
-import tc.oc.pgm.api.disguises.DisguisedManager;
 import tc.oc.pgm.api.map.Contributor;
 import tc.oc.pgm.api.map.MapInfo;
 import tc.oc.pgm.api.map.MapLibrary;
@@ -81,9 +77,6 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
   private ScheduledExecutorService executorService;
   private ScheduledExecutorService asyncExecutorService;
   private VanishManager vanishManager;
-  private DisguisedManager disguisedManager;
-  private DisguiseAPI disguiseAPI;
-  private Economy economy;
 
   public PGMPlugin() {
     super();
@@ -109,11 +102,6 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
       Bukkit.getPluginManager().registerEvents(this, this);
     }
-    if (Bukkit.getPluginManager().getPlugin("iDisguise") != null) {
-      disguiseAPI = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
-    }
-    setupEconomy();
-
     Modules.registerAll();
     Permissions.registerAll();
 
@@ -210,8 +198,6 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
             ? new VanishManagerImpl(matchManager, executorService)
             : new NoopVanishManager();
 
-    disguisedManager = new DisguisedManager();
-
     if (config.showTabList()) {
       matchTabManager = new MatchTabManager(this);
     }
@@ -261,24 +247,6 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     if (mapOrder != null) {
       mapOrder.reload();
     }
-  }
-
-  private boolean setupEconomy() {
-    if (getServer().getPluginManager().getPlugin("Vault") == null) {
-      return false;
-    }
-    RegisteredServiceProvider<Economy> rsp =
-        getServer().getServicesManager().getRegistration(Economy.class);
-    if (rsp == null) {
-      return false;
-    }
-    this.economy = rsp.getProvider();
-    return economy != null;
-  }
-
-  @Override
-  public DisguiseAPI getDisguiseAPI() {
-    return disguiseAPI;
   }
 
   @Override
@@ -336,22 +304,11 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     return vanishManager;
   }
 
-  @Override
-  public DisguisedManager getDisguisedManager() {
-    return disguisedManager;
-  }
-
-  @Override
-  public Economy getEconomy() {
-    return economy;
-  }
-
   private void registerCommands() {
     final CommandGraph graph =
         config.isCommunityMode() ? new CommunityCommandGraph() : new CommandGraph();
 
     graph.register(vanishManager);
-    graph.register(disguisedManager);
     graph.register(ChatDispatcher.get());
 
     new CommandExecutor(this, graph).register();
@@ -367,7 +324,6 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     new BlockTransformListener(this).registerEvents();
     registerEvents(matchManager);
     if (matchTabManager != null) registerEvents(matchTabManager);
-    registerEvents(disguisedManager);
     registerEvents(vanishManager);
     registerEvents(nameDecorationRegistry);
     registerEvents(new GeneralizingListener(this));
