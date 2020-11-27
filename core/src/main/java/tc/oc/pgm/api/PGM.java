@@ -40,6 +40,8 @@ public interface PGM extends Plugin {
 
   VanishManager getVanishManager();
 
+  boolean isPAPIEnabled();
+
   AtomicReference<PGM> GLOBAL = new AtomicReference<>(null);
 
   static PGM set(PGM pgm) {

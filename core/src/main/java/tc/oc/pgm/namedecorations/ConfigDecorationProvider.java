@@ -28,8 +28,13 @@ public class ConfigDecorationProvider implements NameDecorationProvider {
   @Override
   public String getSuffix(UUID uuid) {
     Player player = Bukkit.getPlayer(uuid);
+    if (!PGM.get().isPAPIEnabled())
+      return groups(uuid)
+          .filter(g -> g.getSuffix() != null)
+          .map(Config.Group::getSuffix)
+          .collect(Collectors.joining());
     return PlaceholderAPI.setPlaceholders(
-        player.getPlayer(),
+        player,
         groups(uuid)
             .filter(g -> g.getSuffix() != null)
             .map(Config.Group::getSuffix)

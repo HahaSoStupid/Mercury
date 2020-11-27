@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
+
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -77,6 +78,7 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
   private ScheduledExecutorService executorService;
   private ScheduledExecutorService asyncExecutorService;
   private VanishManager vanishManager;
+  private boolean placeholderAPI;
 
   public PGMPlugin() {
     super();
@@ -98,9 +100,10 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
     } catch (IllegalArgumentException e) {
       return; // Indicates the plugin failed to load, so exit early
     }
-
+    placeholderAPI = false;
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
       Bukkit.getPluginManager().registerEvents(this, this);
+      placeholderAPI = true;
     }
     Modules.registerAll();
     Permissions.registerAll();
@@ -302,6 +305,11 @@ public class PGMPlugin extends JavaPlugin implements PGM, Listener {
   @Override
   public VanishManager getVanishManager() {
     return vanishManager;
+  }
+
+  @Override
+  public boolean isPAPIEnabled() {
+    return placeholderAPI;
   }
 
   private void registerCommands() {
